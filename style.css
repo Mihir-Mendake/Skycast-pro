@@ -1,0 +1,400 @@
+:root {
+    /* Default Dark/Cloudy Theme */
+    --bg-primary: #0f172a;
+    --accent: #38bdf8;
+    --accent-glow: rgba(56, 189, 248, 0.3);
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --text-main: #f8fafc;
+    --text-dim: #94a3b8;
+    --sun-gradient: radial-gradient(circle, #ffbd3f 0%, #ff8a05 100%);
+}
+
+/* ☀️ Summer Theme Overrides */
+body.weather-sunny {
+    --bg-primary: #072e4a; /* Deep summer night/dusk blue */
+    --accent: #ffbd3f;     /* Warm Amber */
+    --accent-glow: rgba(255, 189, 63, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+body {
+    background: var(--bg-primary);
+    color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden;
+    transition: background 1s ease;
+}
+
+/* --- Background Effects --- */
+.bg-gradient {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at top right, #1e293b, var(--bg-primary));
+    z-index: -3;
+    transition: 1s ease;
+}
+
+.bg-gradient::after {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 10%;
+    width: 45vw;
+    height: 45vw;
+    background: var(--accent);
+    filter: blur(140px);
+    opacity: 0.25;
+    z-index: -1;
+    animation: pulseGlow 10s infinite alternate cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+@keyframes pulseGlow {
+    from { transform: scale(1) translate(0, 0); opacity: 0.15; }
+    to { transform: scale(1.2) translate(5%, 5%); opacity: 0.35; }
+}
+
+.noise-overlay {
+    position: fixed;
+    inset: 0;
+    opacity: 0.04;
+    background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+    pointer-events: none;
+    z-index: -2;
+}
+
+#weather-canvas { position: fixed; inset: 0; z-index: -1; }
+
+/* --- Layout --- */
+.app-shell {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 2.5rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Header & Search --- */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4rem;
+}
+
+.logo { font-size: 1.6rem; font-weight: 800; letter-spacing: -1.5px; }
+.logo span { color: var(--accent); text-shadow: 0 0 15px var(--accent-glow); }
+
+.search-container {
+    position: relative; /* Crucial for absolute positioning of suggestions */
+}
+
+.search-pill {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(25px);
+    padding: 12px 24px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    width: 420px;
+    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.search-pill:focus-within {
+    width: 480px;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--accent);
+    box-shadow: 0 0 40px var(--accent-glow);
+}
+
+.search-icon { width: 18px; color: var(--text-dim); margin-right: 12px; }
+#city-input {
+    background: none; border: none; color: white; width: 100%; outline: none;
+    font-size: 1rem; font-weight: 500;
+}
+
+/* --- Autocomplete Dropdown (Enhanced) --- */
+.autocomplete-suggestions {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.8); /* Darker base for legibility */
+    backdrop-filter: blur(40px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 2000;
+    display: none;
+    padding: 8px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    animation: slideDown 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Custom Scrollbar for Dropdown */
+.autocomplete-suggestions::-webkit-scrollbar { width: 6px; }
+.autocomplete-suggestions::-webkit-scrollbar-thumb { 
+    background: var(--glass-border); 
+    border-radius: 10px; 
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-15px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.suggestion-item {
+    padding: 14px 20px;
+    cursor: pointer;
+    border-radius: 16px;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-main);
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+}
+
+.suggestion-item:hover, .suggestion-item.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--accent);
+    transform: translateX(5px);
+}
+
+.suggestion-item .country-code {
+    font-size: 0.65rem;
+    background: var(--accent);
+    color: #0f172a;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.highlight {
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+/* --- Main Hero Section --- */
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 5rem;
+    align-items: center;
+}
+
+.temp-hero { margin: 2rem 0; }
+.temp-number { 
+    font-size: 11rem; 
+    font-weight: 800; 
+    line-height: 0.85; 
+    letter-spacing: -12px; 
+    display: flex; 
+    filter: drop-shadow(0 15px 30px rgba(0,0,0,0.3));
+}
+
+.degree-symbol { 
+    color: var(--accent); 
+    font-size: 6rem; 
+    margin-top: 1.5rem; 
+    font-weight: 200; 
+    margin-left: -5px; 
+}
+
+.condition-badge {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+.quick-stats { display: flex; gap: 2.5rem; margin-top: 2.5rem; }
+.q-stat span { display: block; font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+.q-stat strong { font-size: 1.1rem; color: var(--text-main); }
+
+/* --- Info Cards --- */
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.8rem;
+    margin-bottom: 2rem;
+}
+
+.glass {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(45px);
+    border-radius: 28px;
+    padding: 1.8rem;
+    transition: all 0.4s ease;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.glass::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.08), transparent);
+    transform: rotate(45deg);
+    transition: 0.7s;
+    pointer-events: none;
+}
+
+.glass:hover { 
+    border-color: var(--accent); 
+    transform: translateY(-8px); 
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.glass:hover::before { left: 100%; }
+
+.label { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 12px; font-weight: 500; }
+
+.progress-bar { height: 5px; background: rgba(255,255,255,0.08); border-radius: 10px; margin-top: 15px; }
+.fill { height: 100%; background: var(--accent); border-radius: 10px; box-shadow: 0 0 10px var(--accent-glow); }
+
+/* --- Forecast --- */
+.forecast-section { margin-top: 1rem; }
+.forecast-list {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+.forecast-day { 
+    text-align: center; 
+    padding: 10px;
+    border-radius: 15px;
+    transition: 0.3s;
+}
+.forecast-day:hover { background: rgba(255,255,255,0.05); }
+.forecast-day .day { color: var(--text-dim); font-size: 0.8rem; margin-bottom: 8px; display: block; }
+.forecast-day .f-temp { font-weight: 700; font-size: 1rem; margin-top: 8px; display: block; }
+
+/* =====================================
+   MOBILE FIXES (ADD AT VERY BOTTOM)
+===================================== */
+
+/* Tablets & below */
+@media (max-width: 900px) {
+
+    .app-shell {
+        padding: 1.5rem;
+    }
+
+    .top-nav {
+        flex-direction: column;
+        gap: 2rem;
+        align-items: center;
+        text-align: center;
+    }
+
+    /* Search bar fix */
+    .search-pill,
+    .search-pill:focus-within {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Dashboard stacking */
+    .dashboard {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        text-align: center;
+    }
+
+    .temp-number {
+        justify-content: center;
+        font-size: 8rem;
+        letter-spacing: -6px;
+    }
+
+    .degree-symbol {
+        font-size: 4.5rem;
+        margin-top: 1rem;
+    }
+
+    .condition-badge {
+        justify-content: center;
+    }
+
+    .quick-stats {
+        justify-content: center;
+    }
+}
+
+/* Phones */
+@media (max-width: 480px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    .app-shell {
+        padding: 1.1rem;
+    }
+
+    /* Temperature scaling */
+    .temp-number {
+        font-size: 5.8rem;
+        letter-spacing: -4px;
+    }
+
+    .degree-symbol {
+        font-size: 3rem;
+        margin-top: 0.6rem;
+    }
+
+    .condition-badge {
+        font-size: 1.5rem;
+        gap: 10px;
+    }
+
+    /* Stats stack */
+    .quick-stats {
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        align-items: center;
+    }
+
+    /* Cards stack */
+    .grid-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .glass {
+        padding: 1.3rem;
+        border-radius: 22px;
+    }
+
+    /* Forecast horizontal scroll */
+    .forecast-list {
+        overflow-x: auto;
+        gap: 0.8rem;
+        padding-bottom: 8px;
+        scroll-snap-type: x mandatory;
+        justify-content: flex-start;
+    }
+
+    .forecast-day {
+        min-width: 70px;
+        scroll-snap-align: center;
+        padding: 8px;
+    }
+}

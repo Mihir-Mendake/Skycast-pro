@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>SkyCast Pro // Immersive Weather</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="weather-sunny">
+    <div class="bg-gradient"></div>
+    <div class="noise-overlay"></div>
+    <canvas id="weather-canvas"></canvas>
+
+    <div class="app-shell">
+        <header class="top-nav">
+            <div class="logo">Sky<span>Cast</span></div>
+            <div class="search-container">
+                <div class="search-pill">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" id="city-input" placeholder="Search City (Mumbai, Tokyo, London...)" autocomplete="off">
+                </div>
+                
+                <div id="autocomplete-list" class="autocomplete-suggestions glass"></div>
+
+                <div id="error-message" style="color: #ff6b6b; font-size: 0.8rem; margin-top: 10px; display: none; font-weight: 600; text-align: center;">
+                    ⚠️ City not found. Please check your spelling!
+                </div>
+            </div>
+            <div class="time-box" id="current-time">12:00 PM</div>
+        </header>
+
+        <main class="dashboard">
+            <section class="main-display">
+                <div class="location-info">
+                    <h1 id="city-name">Loading...</h1>
+                    <p id="current-date">-- --</p>
+                </div>
+                
+                <div class="temp-hero">
+                    <div class="temp-number">
+                        <span id="main-temp">0</span><span class="degree-symbol">°</span>
+                    </div>
+                    <div class="condition-badge">
+                        <div id="weather-icon">☀️</div>
+                        <span id="condition-text">Sunny</span>
+                    </div>
+                </div>
+
+                <div class="quick-stats">
+                    <div class="q-stat"><span>Feels like</span> <strong id="feels-like">--°</strong></div>
+                    <div class="q-stat"><span>Sunrise</span> <strong id="val-sunrise">--:-- AM</strong></div>
+                    <div class="q-stat"><span>Sunset</span> <strong id="val-sunset">--:-- PM</strong></div>
+                </div>
+            </section>
+
+            <section class="details-side">
+                <div class="grid-container">
+                    <div class="info-card glass">
+                        <p class="label">Humidity</p>
+                        <h3 id="val-humidity">0%</h3>
+                        <div class="progress-bar"><div class="fill" id="humidity-fill" style="width: 0%"></div></div>
+                    </div>
+                    <div class="info-card glass">
+                        <p class="label">Wind Speed</p>
+                        <h3 id="val-wind">0 km/h</h3>
+                        <p class="sub-text">Live tracking active</p>
+                    </div>
+                    <div class="info-card glass">
+                        <p class="label">UV Index</p>
+                        <h3 id="val-uv">0</h3>
+                        <p class="sub-text">Risk Level: Low</p>
+                    </div>
+                    <div class="info-card glass">
+                        <p class="label">Visibility</p>
+                        <h3 id="val-visibility">10 km</h3>
+                        <p class="sub-text">Clear view</p>
+                    </div>
+                </div>
+
+                <div class="forecast-section glass">
+                    <h4 class="title">7-Day Forecast</h4>
+                    <div class="forecast-list" id="forecast-list"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
