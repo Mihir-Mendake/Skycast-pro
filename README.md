@@ -158,3 +158,8 @@ Built with modern web technologies and best practices for a smooth, immersive we
 **Enjoy using SkyCast Pro! 🌤️**
 
 For updates and improvements, check back regularly.
+
+Author
+Mihir Mendake
+
+GitHub: https://github.com/Mihir-Mendake
