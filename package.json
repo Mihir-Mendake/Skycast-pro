@@ -1,7 +1,7 @@
 {
-  "name": "skycast-pro",
+  "name": "stratos-weather",
   "version": "1.0.0",
-  "description": "SkyCast Pro - Immersive Full-Stack Weather Application",
+  "description": "Stratos Weather - Immersive Full-Stack Weather Application",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",

@@ -13,7 +13,7 @@ let weatherCache = new Map();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 // App State
-let currentUnit = localStorage.getItem('skycast_unit') || 'C'; // 'C' or 'F'
+let currentUnit = localStorage.getItem('stratos_unit') || localStorage.getItem('skycast_unit') || 'C'; // 'C' or 'F'
 let currentCityTimezone = null;
 let currentCityData = null; // Stores last fetched weather data
 let currentCityMeta = { name: '', country: '', lat: 0, lon: 0 };
@@ -77,7 +77,7 @@ function initApp() {
 // 3. UNIT CONVERSIONS (°C <-> °F)
 function toggleUnit() {
     currentUnit = currentUnit === 'C' ? 'F' : 'C';
-    localStorage.setItem('skycast_unit', currentUnit);
+    localStorage.setItem('stratos_unit', currentUnit);
     updateUnitButtonLabel();
 
     // Re-render current weather if available
@@ -406,7 +406,7 @@ async function loadFavorites() {
 
     if (favorites.length === 0) {
         try {
-            favorites = JSON.parse(localStorage.getItem('skycast_favorites') || '[]');
+            favorites = JSON.parse(localStorage.getItem('stratos_favorites') || localStorage.getItem('skycast_favorites') || '[]');
         } catch (e) {
             favorites = [];
         }
@@ -481,7 +481,7 @@ async function toggleCurrentFavorite() {
         }
     }
 
-    localStorage.setItem('skycast_favorites', JSON.stringify(userFavorites));
+    localStorage.setItem('stratos_favorites', JSON.stringify(userFavorites));
     updateFavoriteStar(cityName);
     renderFavoritesBar();
 }

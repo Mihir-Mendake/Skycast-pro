@@ -1,8 +1,8 @@
-# ☀️ SkyCast Pro - Full-Stack Immersive Weather Application
+# ☀️ Stratos Weather - Full-Stack Immersive Weather Application
 
-SkyCast Pro is a modern, full-stack weather dashboard built with a **Node.js/Express** backend and a responsive glassmorphism frontend (HTML5, CSS3, JavaScript ES6+). It provides real-time weather analytics, 24-hour hourly forecasts, 7-day outlooks, air quality index (AQI), persistent bookmarks/favorites, unit switching (°C / °F), dynamic condition themes, and canvas weather particle animations.
+Stratos Weather is a modern, full-stack weather dashboard built with a **Node.js/Express** backend and a responsive glassmorphism frontend (HTML5, CSS3, JavaScript ES6+). It provides real-time weather analytics, 24-hour hourly forecasts, 7-day outlooks, air quality index (AQI), persistent bookmarks/favorites, unit switching (°C / °F), dynamic condition themes, and canvas weather particle animations.
 
-![SkyCast Pro](https://img.shields.io/badge/Weather-Full--Stack%20App-blue?style=for-the-badge)
+![Stratos Weather](https://img.shields.io/badge/Stratos--Weather-Full--Stack%20App-blue?style=for-the-badge)
 ![Node.js](https://img.shields.io/badge/Node.js-v24+-green?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express.js-Backend-black?style=for-the-badge&logo=express&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow?style=for-the-badge&logo=javascript&logoColor=white)
