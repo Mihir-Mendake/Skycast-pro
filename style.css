@@ -430,3 +430,154 @@ body {
         padding: 8px;
     }
 }
+
+
+/* --- Nav Controls & Unit Toggle --- */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.unit-toggle {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 8px 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    backdrop-filter: blur(25px);
+    transition: all 0.3s ease;
+}
+
+.unit-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* --- Favorites Bar --- */
+.favorites-bar {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    justify-content: center;
+    scrollbar-width: none;
+}
+.favorites-bar::-webkit-scrollbar { display: none; }
+
+.fav-chip {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--glass-border);
+    color: var(--text-dim);
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.fav-chip:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.fav-chip.active {
+    background: rgba(255, 255, 255, 0.18);
+    color: var(--accent);
+    border-color: var(--accent);
+    font-weight: 600;
+}
+
+/* --- Location Header & Favorite Button --- */
+.location-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.fav-icon-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease;
+    line-height: 1;
+    padding: 0;
+}
+
+.fav-icon-btn:hover {
+    transform: scale(1.25);
+    color: #facc15;
+}
+
+.fav-icon-btn.active {
+    color: #facc15;
+    text-shadow: 0 0 12px rgba(250, 204, 21, 0.6);
+}
+
+/* --- Hourly Forecast Section --- */
+.hourly-section {
+    margin-bottom: 1.5rem;
+}
+
+.hourly-list {
+    display: flex;
+    gap: 0.85rem;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-top: 1rem;
+    scrollbar-width: thin;
+}
+
+.hourly-list::-webkit-scrollbar { height: 4px; }
+.hourly-list::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+
+.hourly-item {
+    flex: 0 0 auto;
+    text-align: center;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: 0.3s;
+    min-width: 65px;
+}
+
+.hourly-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent);
+    transform: translateY(-3px);
+}
+
+.hourly-item .h-time {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    display: block;
+    margin-bottom: 6px;
+}
+
+.hourly-item .h-icon {
+    font-size: 1.25rem;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.hourly-item .h-temp {
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: block;
+}
