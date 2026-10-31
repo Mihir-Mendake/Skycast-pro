@@ -10,12 +10,44 @@
     --sun-gradient: radial-gradient(circle, #ffbd3f 0%, #ff8a05 100%);
 }
 
-/* ☀️ Summer Theme Overrides */
+/* ☀️ Sunny / Clear Theme */
 body.weather-sunny {
-    --bg-primary: #072e4a; /* Deep summer night/dusk blue */
-    --accent: #ffbd3f;     /* Warm Amber */
+    --bg-primary: #072e4a;
+    --accent: #ffbd3f;
     --accent-glow: rgba(255, 189, 63, 0.4);
     --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+/* ☁️ Cloudy / Overcast Theme */
+body.weather-cloudy {
+    --bg-primary: #151d2a;
+    --accent: #93c5fd;
+    --accent-glow: rgba(147, 197, 253, 0.35);
+    --glass-border: rgba(255, 255, 255, 0.16);
+}
+
+/* 🌧️ Rain / Drizzle Theme */
+body.weather-rain {
+    --bg-primary: #0a192f;
+    --accent: #38bdf8;
+    --accent-glow: rgba(56, 189, 248, 0.4);
+    --glass-border: rgba(56, 189, 248, 0.2);
+}
+
+/* ❄️ Snow / Winter Theme */
+body.weather-snow {
+    --bg-primary: #0d1e2d;
+    --accent: #a5f3fc;
+    --accent-glow: rgba(165, 243, 252, 0.4);
+    --glass-border: rgba(165, 243, 252, 0.25);
+}
+
+/* ⛈️ Storm / Thunder Theme */
+body.weather-storm {
+    --bg-primary: #0f1026;
+    --accent: #c084fc;
+    --accent-glow: rgba(192, 132, 252, 0.45);
+    --glass-border: rgba(192, 132, 252, 0.25);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
