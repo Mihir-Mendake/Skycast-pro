@@ -55,19 +55,35 @@ function initApp() {
     setupHorizontalScroll('hourly-list', 'scroll-hourly-left', 'scroll-hourly-right');
     setupHorizontalScroll('favorites-bar');
 
-    // Geolocation with fallback to New York
+    // Geolocation with immediate fallback timeout (prevents infinite "Loading..." state)
+    let locationResolved = false;
+    const fallbackTimer = setTimeout(() => {
+        if (!locationResolved) {
+            locationResolved = true;
+            fetchWeatherByCity("New York");
+        }
+    }, 3000);
+
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
+                if (locationResolved) return;
+                locationResolved = true;
+                clearTimeout(fallbackTimer);
                 const { latitude, longitude } = position.coords;
                 updateWeather(latitude, longitude, "My Location");
             },
             (error) => {
+                if (locationResolved) return;
+                locationResolved = true;
+                clearTimeout(fallbackTimer);
                 console.warn("Geolocation denied or failed:", error);
                 fetchWeatherByCity("New York");
-            }
+            },
+            { timeout: 4000, maximumAge: 300000 }
         );
     } else {
+        clearTimeout(fallbackTimer);
         fetchWeatherByCity("New York");
     }
 

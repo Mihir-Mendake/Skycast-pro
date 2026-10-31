@@ -7,9 +7,13 @@ const DATA_DIR = path.join(__dirname, '..', 'data');
 const FAVORITES_FILE = path.join(DATA_DIR, 'favorites.json');
 const HISTORY_FILE = path.join(DATA_DIR, 'history.json');
 
-// Ensure data directory and files exist
-if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+// Ensure data directory exists safely (prevents crashes in read-only environments like Vercel)
+try {
+    if (!fs.existsSync(DATA_DIR)) {
+        fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+} catch (e) {
+    console.warn("Filesystem read-only or unavailable for data directory:", e.message);
 }
 
 function readJsonFile(filePath, defaultData = []) {
