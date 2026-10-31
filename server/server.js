@@ -35,13 +35,15 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(publicDir, 'index.html'));
 });
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`===============================================`);
-    console.log(`🌤️ SkyCast Pro Server running on http://localhost:${PORT}`);
-    console.log(`🚀 Weather API available at http://localhost:${PORT}/api/weather`);
-    console.log(`🔍 Search API available at http://localhost:${PORT}/api/search`);
-    console.log(`===============================================`);
-});
+// Start server when run directly (e.g. npm start)
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`===============================================`);
+        console.log(`🌤️ SkyCast Pro Server running on http://localhost:${PORT}`);
+        console.log(`🚀 Weather API available at http://localhost:${PORT}/api/weather`);
+        console.log(`🔍 Search API available at http://localhost:${PORT}/api/search`);
+        console.log(`===============================================`);
+    });
+}
 
 module.exports = app;

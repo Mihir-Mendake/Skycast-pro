@@ -1,6 +1,7 @@
 // 1. API CONFIGURATION & STATE
-const USE_LOCAL_BACKEND = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const API_BASE_URL = USE_LOCAL_BACKEND ? '/api' : null;
+// Use backend /api when served over HTTP/HTTPS (both localhost & Vercel)
+const USE_API = window.location.protocol.startsWith('http');
+const API_BASE_URL = USE_API ? '/api' : null;
 
 // Open-Meteo API endpoints (fallback if backend is offline or opened via file://)
 const OPEN_METEO_BASE = 'https://api.open-meteo.com/v1';
