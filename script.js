@@ -50,6 +50,10 @@ function initApp() {
     // Load initial favorites
     loadFavorites();
 
+    // Enable smooth mouse-wheel & drag scrolling for horizontal lists
+    setupHorizontalScroll('hourly-list', 'scroll-hourly-left', 'scroll-hourly-right');
+    setupHorizontalScroll('favorites-bar');
+
     // Geolocation with fallback to New York
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -781,6 +785,69 @@ function initWeatherAnimation(condition) {
         animationId = requestAnimationFrame(draw);
     }
     draw();
+}
+
+function setupHorizontalScroll(containerId, leftBtnId, rightBtnId) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+
+    // Arrow buttons
+    if (leftBtnId) {
+        const leftBtn = document.getElementById(leftBtnId);
+        if (leftBtn) {
+            leftBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                el.scrollBy({ left: -260, behavior: 'smooth' });
+            });
+        }
+    }
+    if (rightBtnId) {
+        const rightBtn = document.getElementById(rightBtnId);
+        if (rightBtn) {
+            rightBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                el.scrollBy({ left: 260, behavior: 'smooth' });
+            });
+        }
+    }
+
+    // Convert mouse wheel to horizontal scrolling
+    el.addEventListener('wheel', (e) => {
+        if (e.deltaY !== 0) {
+            e.preventDefault();
+            el.scrollLeft += e.deltaY * 1.5;
+        }
+    }, { passive: false });
+
+    // Click & drag to scroll
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    el.addEventListener('mousedown', (e) => {
+        isDown = true;
+        el.classList.add('grabbing');
+        startX = e.pageX - el.offsetLeft;
+        scrollLeft = el.scrollLeft;
+    });
+
+    el.addEventListener('mouseleave', () => {
+        isDown = false;
+        el.classList.remove('grabbing');
+    });
+
+    el.addEventListener('mouseup', () => {
+        isDown = false;
+        el.classList.remove('grabbing');
+    });
+
+    el.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - el.offsetLeft;
+        const walk = (x - startX) * 1.8;
+        el.scrollLeft = scrollLeft - walk;
+    });
 }
 
 function resize() {
