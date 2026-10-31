@@ -4,6 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const weatherRoutes = require('./routes/weather');
+const favoritesRoutes = require('./routes/favorites');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,8 +22,9 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Weather and geocoding API routes
+// API routes
 app.use('/api', weatherRoutes);
+app.use('/api', favoritesRoutes);
 
 // Serve static frontend files from project root
 const publicDir = path.join(__dirname, '..');
