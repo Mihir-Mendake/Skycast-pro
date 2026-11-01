@@ -6,7 +6,8 @@
     <title>Stratos 3D Earth // Real-Time Global Climate Sphere</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <!-- Globe.gl 3D WebGL Library -->
+    <!-- Three.js & Globe.gl 3D WebGL Engines -->
+    <script src="https://unpkg.com/three"></script>
     <script src="https://unpkg.com/globe.gl"></script>
 </head>
 <body class="globe-page">
@@ -14,7 +15,7 @@
     <!-- Loading Screen -->
     <div class="globe-loader" id="globe-loader">
         <div class="globe-spinner"></div>
-        <div class="globe-loader-text">Loading 3D Atmospheric Sphere...</div>
+        <div class="globe-loader-text">Initializing 3D Atmosphere & Live Thermal Satellite Data...</div>
     </div>
 
     <!-- 3D WebGL Canvas Container -->
@@ -45,6 +46,21 @@
                 <div class="time-box" id="current-time">12:00 PM</div>
             </div>
         </header>
+
+        <!-- Quick Hotspots Horizontal Bar -->
+        <div class="globe-hotspots-bar" id="hotspots-bar">
+            <span class="hotspots-label">⚡ Fly To:</span>
+            <button class="hotspot-chip" data-city="Tokyo">🇯🇵 Tokyo</button>
+            <button class="hotspot-chip" data-city="London">🇬🇧 London</button>
+            <button class="hotspot-chip" data-city="New York">🇺🇸 New York</button>
+            <button class="hotspot-chip" data-city="Mumbai">🇮🇳 Mumbai</button>
+            <button class="hotspot-chip" data-city="Dubai">🇦🇪 Dubai</button>
+            <button class="hotspot-chip" data-city="Paris">🇫🇷 Paris</button>
+            <button class="hotspot-chip" data-city="Sydney">🇦🇺 Sydney</button>
+            <button class="hotspot-chip" data-city="Cairo">🇪🇬 Cairo</button>
+            <button class="hotspot-chip" data-city="Reykjavik">🇮🇸 Reykjavik</button>
+            <button class="hotspot-chip" data-city="Honolulu">🌺 Honolulu</button>
+        </div>
 
         <!-- Bottom Controls & Floating Panels -->
         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; position: relative;">
@@ -90,9 +106,10 @@
 
             <!-- Bottom Floating Toolbar -->
             <div class="globe-toolbar">
+                <button class="globe-btn active" id="btn-toggle-texture">🌙 City Lights</button>
+                <button class="globe-btn active" id="btn-toggle-arcs">💨 Jet Streams</button>
                 <button class="globe-btn active" id="btn-toggle-spin">⏸️ Auto-Spin</button>
                 <button class="globe-btn" id="btn-reset-view">🎯 Reset Camera</button>
-                <button class="globe-btn active" id="btn-toggle-rings">💫 Pulse Rings</button>
             </div>
 
             <!-- Temperature Heatmap Legend -->

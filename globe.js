@@ -1,5 +1,6 @@
 // ===================================================
 // Stratos Weather — 3D Earth Controller (globe.js)
+// Next-Gen Glass Badges, Jet Stream Arcs & Atmospheric Clouds
 // ===================================================
 
 const OPEN_METEO_BASE = 'https://api.open-meteo.com/v1';
@@ -7,46 +8,75 @@ const GEOCODING_BASE = 'https://geocoding-api.open-meteo.com/v1';
 const USE_API = window.location.protocol.startsWith('http');
 const API_BASE_URL = USE_API ? '/api' : null;
 
-// App & Unit State
+// Earth Texture URLs
+const TEXTURES = {
+    night: 'https://unpkg.com/three-globe/example/img/earth-night.jpg',
+    day: 'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
+    bump: 'https://unpkg.com/three-globe/example/img/earth-topology.png',
+    clouds: 'https://unpkg.com/three-globe/example/img/clouds.png',
+    stars: 'https://unpkg.com/three-globe/example/img/night-sky.png'
+};
+
+// Global Jet Stream Corridors (Luminous 3D Arcs)
+const JET_STREAM_ARCS = [
+    { startLat: 40.7128, startLng: -74.0060, endLat: 51.5074, endLng: -0.1278, color: ['#38bdf8', '#818cf8'] }, // NY -> London
+    { startLat: 51.5074, startLng: -0.1278, endLat: 48.8566, endLng: 2.3522, color: ['#818cf8', '#a855f7'] },  // London -> Paris
+    { startLat: 48.8566, startLng: 2.3522, endLat: 25.2048, endLng: 55.2708, color: ['#a855f7', '#fbbf24'] },  // Paris -> Dubai
+    { startLat: 25.2048, startLng: 55.2708, endLat: 19.0760, endLng: 72.8777, color: ['#fbbf24', '#f87171'] },  // Dubai -> Mumbai
+    { startLat: 19.0760, startLng: 72.8777, endLat: 1.3521, endLng: 103.8198, color: ['#f87171', '#34d399'] },  // Mumbai -> Singapore
+    { startLat: 1.3521, startLng: 103.8198, endLat: 35.6762, endLng: 139.6503, color: ['#34d399', '#38bdf8'] },  // Singapore -> Tokyo
+    { startLat: 35.6762, startLng: 139.6503, endLat: 21.3069, endLng: -157.8583, color: ['#38bdf8', '#60a5fa'] },// Tokyo -> Honolulu
+    { startLat: 21.3069, startLng: -157.8583, endLat: 34.0522, endLng: -118.2437, color: ['#60a5fa', '#f59e0b'] },// Honolulu -> LA
+    { startLat: 34.0522, startLng: -118.2437, endLat: 40.7128, endLng: -74.0060, color: ['#f59e0b', '#38bdf8'] }, // LA -> NY
+    { startLat: -33.8688, startLng: 151.2093, endLat: 1.3521, endLng: 103.8198, color: ['#38bdf8', '#34d399'] }, // Sydney -> Singapore
+    { startLat: 64.1466, startLng: -21.9426, endLat: 51.5074, endLng: -0.1278, color: ['#93c5fd', '#38bdf8'] },  // Reykjavik -> London
+    { startLat: -22.9068, startLng: -43.1729, endLat: -33.9249, endLng: 18.4241, color: ['#fbbf24', '#f43f5e'] }, // Rio -> Cape Town
+    { startLat: -33.9249, startLng: 18.4241, endLat: 30.0444, endLng: 31.2357, color: ['#f43f5e', '#fbbf24'] },  // Cape Town -> Cairo
+    { startLat: 30.0444, startLng: 31.2357, endLat: 25.2048, endLng: 55.2708, color: ['#fbbf24', '#f59e0b'] }   // Cairo -> Dubai
+];
+
+// Major Global Weather Stations
+const GLOBAL_HUBS = [
+    { name: "Tokyo", country: "Japan", flag: "🇯🇵", lat: 35.6762, lng: 139.6503 },
+    { name: "Mumbai", country: "India", flag: "🇮🇳", lat: 19.0760, lng: 72.8777 },
+    { name: "London", country: "United Kingdom", flag: "🇬🇧", lat: 51.5074, lng: -0.1278 },
+    { name: "New York", country: "United States", flag: "🇺🇸", lat: 40.7128, lng: -74.0060 },
+    { name: "Sydney", country: "Australia", flag: "🇦🇺", lat: -33.8688, lng: 151.2093 },
+    { name: "Cairo", country: "Egypt", flag: "🇪🇬", lat: 30.0444, lng: 31.2357 },
+    { name: "Paris", country: "France", flag: "🇫🇷", lat: 48.8566, lng: 2.3522 },
+    { name: "Dubai", country: "UAE", flag: "🇦🇪", lat: 25.2048, lng: 55.2708 },
+    { name: "Singapore", country: "Singapore", flag: "🇸🇬", lat: 1.3521, lng: 103.8198 },
+    { name: "Rio de Janeiro", country: "Brazil", flag: "🇧🇷", lat: -22.9068, lng: -43.1729 },
+    { name: "Los Angeles", country: "United States", flag: "🇺🇸", lat: 34.0522, lng: -118.2437 },
+    { name: "Cape Town", country: "South Africa", flag: "🇿🇦", lat: -33.9249, lng: 18.4241 },
+    { name: "Reykjavik", country: "Iceland", flag: "🇮🇸", lat: 64.1466, lng: -21.9426 },
+    { name: "Seoul", country: "South Korea", flag: "🇰🇷", lat: 37.5665, lng: 126.9780 },
+    { name: "Berlin", country: "Germany", flag: "🇩🇪", lat: 52.5200, lng: 13.4050 },
+    { name: "Buenos Aires", country: "Argentina", flag: "🇦🇷", lat: -34.6037, lng: -58.3816 },
+    { name: "Bangkok", country: "Thailand", flag: "🇹🇭", lat: 13.7563, lng: 100.5018 },
+    { name: "Nairobi", country: "Kenya", flag: "🇰🇪", lat: -1.2921, lng: 36.8219 },
+    { name: "Vancouver", country: "Canada", flag: "🇨🇦", lat: 49.2827, lng: -123.1207 },
+    { name: "Honolulu", country: "United States", flag: "🌺", lat: 21.3069, lng: -157.8583 },
+    { name: "Moscow", country: "Russia", flag: "🇷🇺", lat: 55.7558, lng: 37.6173 }
+];
+
+// App State
 let currentUnit = localStorage.getItem('stratos_unit') || localStorage.getItem('skycast_unit') || 'C';
 let isAutoSpinning = true;
-let areRingsEnabled = true;
+let areArcsEnabled = true;
+let currentTextureMode = 'night'; // 'night' or 'day'
 let myGlobe = null;
 let cityMarkers = [];
 let activeInspectedCity = null;
+let cloudsMesh = null;
 
-// Iconic global cities for live heatmap markers
-const GLOBAL_HUBS = [
-    { name: "Tokyo", country: "Japan", lat: 35.6762, lng: 139.6503 },
-    { name: "Mumbai", country: "India", lat: 19.0760, lng: 72.8777 },
-    { name: "London", country: "United Kingdom", lat: 51.5074, lng: -0.1278 },
-    { name: "New York", country: "United States", lat: 40.7128, lng: -74.0060 },
-    { name: "Sydney", country: "Australia", lat: -33.8688, lng: 151.2093 },
-    { name: "Cairo", country: "Egypt", lat: 30.0444, lng: 31.2357 },
-    { name: "Paris", country: "France", lat: 48.8566, lng: 2.3522 },
-    { name: "Dubai", country: "UAE", lat: 25.2048, lng: 55.2708 },
-    { name: "Singapore", country: "Singapore", lat: 1.3521, lng: 103.8198 },
-    { name: "Rio de Janeiro", country: "Brazil", lat: -22.9068, lng: -43.1729 },
-    { name: "Los Angeles", country: "United States", lat: 34.0522, lng: -118.2437 },
-    { name: "Cape Town", country: "South Africa", lat: -33.9249, lng: 18.4241 },
-    { name: "Reykjavik", country: "Iceland", lat: 64.1466, lng: -21.9426 },
-    { name: "Seoul", country: "South Korea", lat: 37.5665, lng: 126.9780 },
-    { name: "Berlin", country: "Germany", lat: 52.5200, lng: 13.4050 },
-    { name: "Buenos Aires", country: "Argentina", lat: -34.6037, lng: -58.3816 },
-    { name: "Bangkok", country: "Thailand", lat: 13.7563, lng: 100.5018 },
-    { name: "Nairobi", country: "Kenya", lat: -1.2921, lng: 36.8219 },
-    { name: "Vancouver", country: "Canada", lat: 49.2827, lng: -123.1207 },
-    { name: "Honolulu", country: "United States", lat: 21.3069, lng: -157.8583 },
-    { name: "Moscow", country: "Russia", lat: 55.7558, lng: 37.6173 }
-];
-
-// Temperature Color Palette: Deep Blue -> Cyan -> Lime -> Amber -> Coral
+// Dynamic Temperature Color Palette
 function getTempColor(celsius) {
     if (celsius <= 0) return '#38bdf8'; // Freezing (Ice Blue)
-    if (celsius <= 15) return '#2dd4bf'; // Cool (Teal/Cyan)
+    if (celsius <= 15) return '#2dd4bf'; // Cool (Cyan/Teal)
     if (celsius <= 25) return '#a3e635'; // Mild (Fresh Lime)
-    if (celsius <= 33) return '#fbbf24'; // Warm (Amber)
-    return '#f87171'; // Hot (Crimson Coral)
+    if (celsius <= 32) return '#fbbf24'; // Warm (Amber)
+    return '#f87171'; // Scorching (Crimson)
 }
 
 function formatTemp(celsius) {
@@ -66,7 +96,6 @@ function formatWindSpeed(kmh) {
     return `${Math.round(val)} km/h`;
 }
 
-// Map WMO Weather Codes to Conditions and Icons
 function mapWeatherCode(code, isDay = true) {
     if (code === 0 || code === 1) return { condition: isDay ? "Sunny" : "Clear", icon: isDay ? "☀️" : "🌙" };
     if (code === 2 || code === 3 || code === 45 || code === 48) return { condition: "Cloudy", icon: "☁️" };
@@ -82,69 +111,98 @@ function initGlobe() {
     if (!container) return;
 
     myGlobe = Globe()(container)
-        .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
-        .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-        .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
+        .globeImageUrl(TEXTURES.night)
+        .bumpImageUrl(TEXTURES.bump)
+        .backgroundImageUrl(TEXTURES.stars)
         .atmosphereColor('#38bdf8')
         .atmosphereAltitude(0.24)
-        // 3D Heatmap Points Layer
-        .pointsData(cityMarkers)
-        .pointLat(d => d.lat)
-        .pointLng(d => d.lng)
-        .pointColor(d => d.color)
-        .pointAltitude(0.06)
-        .pointRadius(0.85)
-        .pointResolution(24)
-        .pointLabel(d => `
-            <div style="
-                background: rgba(15, 23, 42, 0.9);
-                color: #fff;
-                padding: 6px 12px;
-                border-radius: 12px;
-                border: 1px solid ${d.color};
-                font-family: 'Plus Jakarta Sans', sans-serif;
-                font-size: 12px;
-                font-weight: 700;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-                backdrop-filter: blur(10px);
-                pointer-events: none;
-            ">
-                <span style="color: ${d.color};">${d.name}</span>: ${formatTemp(d.temp)}°${currentUnit} ${d.icon}
-            </div>
-        `)
-        .onPointClick(d => inspectCity(d))
-        // Pulsing Rings Layer
-        .ringsData(cityMarkers)
-        .ringLat(d => d.lat)
-        .ringLng(d => d.lng)
-        .ringColor(d => () => areRingsEnabled ? d.color : 'rgba(0,0,0,0)')
-        .ringMaxRadius(3.5)
-        .ringPropagationSpeed(1.6)
-        .ringRepeatPeriod(1400);
+        // Modern Floating Glass Badges (Replaces Bulky Cylinders!)
+        .htmlElementsData(cityMarkers)
+        .htmlLat(d => d.lat)
+        .htmlLng(d => d.lng)
+        .htmlAltitude(0.035)
+        .htmlElement(d => {
+            const el = document.createElement('div');
+            el.className = 'globe-marker-badge';
+            el.style.setProperty('--accent-color', d.color);
+            el.innerHTML = `
+                <span class="marker-dot" style="background: ${d.color}; box-shadow: 0 0 10px ${d.color};"></span>
+                <span class="marker-city">${d.name}</span>
+                <span class="marker-temp">${formatTemp(d.temp)}°</span>
+                <span class="marker-icon">${d.icon}</span>
+            `;
+            el.addEventListener('click', () => inspectCity(d));
+            return el;
+        })
+        // Luminous Jet Stream Arcs
+        .arcsData(areArcsEnabled ? JET_STREAM_ARCS : [])
+        .arcStartLat(d => d.startLat)
+        .arcStartLng(d => d.startLng)
+        .arcEndLat(d => d.endLat)
+        .arcEndLng(d => d.endLng)
+        .arcColor(d => d.color)
+        .arcAltitude(0.25)
+        .arcStroke(0.85)
+        .arcDashLength(0.4)
+        .arcDashGap(1.2)
+        .arcDashAnimateTime(2200);
 
-    // Initial Camera View (focus on Europe/Asia overview)
-    myGlobe.pointOfView({ lat: 20, lng: 40, altitude: 2.2 });
+    // Initial View Position
+    myGlobe.pointOfView({ lat: 20, lng: 35, altitude: 2.1 });
 
     // Auto-spin controls
     myGlobe.controls().autoRotate = isAutoSpinning;
     myGlobe.controls().autoRotateSpeed = 0.55;
     myGlobe.controls().enableDamping = true;
 
-    // Handle Window Resizing
+    // Add 3D Floating Clouds
+    setupClouds();
+
+    // Window Resize Handler
     window.addEventListener('resize', () => {
         myGlobe.width(window.innerWidth).height(window.innerHeight);
     });
 
-    // Setup UI Listeners & Clocks
     setupControls();
     updateClock();
     setInterval(updateClock, 1000);
 
-    // Fetch Weather Data for Global Cities
     fetchGlobalHotspots();
 }
 
-// 2. FETCH LIVE DATA FOR GLOBAL HUBS
+// 2. SETUP 3D TRANSLUCENT CLOUDS
+function setupClouds() {
+    if (!window.THREE || !myGlobe) return;
+
+    try {
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load(TEXTURES.clouds, (cloudsTexture) => {
+            const radius = myGlobe.getGlobeRadius();
+            const geometry = new THREE.SphereGeometry(radius * 1.012, 75, 75);
+            const material = new THREE.MeshPhongMaterial({
+                map: cloudsTexture,
+                transparent: true,
+                opacity: 0.5,
+                blending: THREE.AdditiveBlending
+            });
+
+            cloudsMesh = new THREE.Mesh(geometry, material);
+            myGlobe.scene().add(cloudsMesh);
+
+            // Cloud Drift Animation
+            (function rotateClouds() {
+                if (cloudsMesh) {
+                    cloudsMesh.rotation.y += 0.00045;
+                }
+                requestAnimationFrame(rotateClouds);
+            })();
+        });
+    } catch (e) {
+        console.warn("3D Cloud layer bypassed:", e.message);
+    }
+}
+
+// 3. FETCH LIVE DATA FOR GLOBAL HUBS
 async function fetchGlobalHotspots() {
     const fetchPromises = GLOBAL_HUBS.map(async (city) => {
         try {
@@ -153,7 +211,7 @@ async function fetchGlobalHotspots() {
             const data = await resp.json();
             const current = data.current || {};
             const daily = data.daily || {};
-            const celsius = current.temperature_2m !== undefined ? current.temperature_2m : 20;
+            const celsius = current.temperature_2m !== undefined ? current.temperature_2m : 22;
             const isDay = current.is_day === 1;
             const code = current.weather_code || 0;
             const { condition, icon } = mapWeatherCode(code, isDay);
@@ -187,10 +245,9 @@ async function fetchGlobalHotspots() {
 
     cityMarkers = await Promise.all(fetchPromises);
 
-    // Update Globe Data
+    // Update Globe HTML Elements
     if (myGlobe) {
-        myGlobe.pointsData(cityMarkers);
-        myGlobe.ringsData(cityMarkers);
+        myGlobe.htmlElementsData(cityMarkers);
     }
 
     // Hide loader
@@ -199,7 +256,7 @@ async function fetchGlobalHotspots() {
         loader.classList.add('loaded');
     }
 
-    // Check if user has an active city in localStorage to auto-inspect
+    // Check if active city in localStorage to auto-inspect
     const activeCityName = localStorage.getItem('stratos_active_city');
     if (activeCityName) {
         const found = cityMarkers.find(c => c.name.toLowerCase() === activeCityName.toLowerCase());
@@ -209,11 +266,10 @@ async function fetchGlobalHotspots() {
     }
 }
 
-// 3. INSPECT CITY (Fly Camera & Open Floating Card)
+// 4. INSPECT CITY (Camera Fly-To & Open Floating Panel)
 function inspectCity(city) {
     activeInspectedCity = city;
 
-    // Smooth camera transition to the selected city
     if (myGlobe) {
         myGlobe.pointOfView({ lat: city.lat, lng: city.lng, altitude: 1.55 }, 1400);
     }
@@ -241,13 +297,12 @@ function inspectCity(city) {
         card.classList.remove('hidden');
     }
 
-    // Save as active city in localStorage
     try {
         localStorage.setItem('stratos_active_city', city.name);
     } catch (e) {}
 }
 
-// 4. UI CONTROLS & EVENT LISTENERS
+// 5. UI CONTROLS & EVENT LISTENERS
 function setupControls() {
     // Unit Toggle (°C / °F)
     const unitBtn = document.getElementById('unit-toggle');
@@ -259,19 +314,47 @@ function setupControls() {
             updateUnitButtonLabel();
             updateLegendLabels();
 
-            // Refresh Inspector Card if open
             if (activeInspectedCity) {
                 inspectCity(activeInspectedCity);
             }
 
-            // Force Globe tooltip update
             if (myGlobe) {
-                myGlobe.pointsData([...cityMarkers]);
+                myGlobe.htmlElementsData([...cityMarkers]);
             }
         });
     }
 
-    // Auto-spin button
+    // Day / Night Texture Toggle
+    const textureBtn = document.getElementById('btn-toggle-texture');
+    if (textureBtn) {
+        textureBtn.addEventListener('click', () => {
+            if (currentTextureMode === 'night') {
+                currentTextureMode = 'day';
+                textureBtn.innerText = '☀️ Blue Marble';
+                textureBtn.classList.add('active');
+                if (myGlobe) myGlobe.globeImageUrl(TEXTURES.day);
+            } else {
+                currentTextureMode = 'night';
+                textureBtn.innerText = '🌙 City Lights';
+                textureBtn.classList.remove('active');
+                if (myGlobe) myGlobe.globeImageUrl(TEXTURES.night);
+            }
+        });
+    }
+
+    // Toggle Jet Streams (Arcs)
+    const arcsBtn = document.getElementById('btn-toggle-arcs');
+    if (arcsBtn) {
+        arcsBtn.addEventListener('click', () => {
+            areArcsEnabled = !areArcsEnabled;
+            arcsBtn.classList.toggle('active', areArcsEnabled);
+            if (myGlobe) {
+                myGlobe.arcsData(areArcsEnabled ? JET_STREAM_ARCS : []);
+            }
+        });
+    }
+
+    // Auto-spin toggle
     const spinBtn = document.getElementById('btn-toggle-spin');
     if (spinBtn) {
         spinBtn.addEventListener('click', () => {
@@ -284,24 +367,12 @@ function setupControls() {
         });
     }
 
-    // Reset Camera button
+    // Reset Camera
     const resetBtn = document.getElementById('btn-reset-view');
     if (resetBtn) {
         resetBtn.addEventListener('click', () => {
             if (myGlobe) {
-                myGlobe.pointOfView({ lat: 20, lng: 40, altitude: 2.2 }, 1200);
-            }
-        });
-    }
-
-    // Toggle Pulse Rings
-    const ringsBtn = document.getElementById('btn-toggle-rings');
-    if (ringsBtn) {
-        ringsBtn.addEventListener('click', () => {
-            areRingsEnabled = !areRingsEnabled;
-            ringsBtn.classList.toggle('active', areRingsEnabled);
-            if (myGlobe) {
-                myGlobe.ringsData(areRingsEnabled ? cityMarkers : []);
+                myGlobe.pointOfView({ lat: 20, lng: 35, altitude: 2.1 }, 1200);
             }
         });
     }
@@ -315,8 +386,24 @@ function setupControls() {
         });
     }
 
+    // Quick Hotspots Fly-To Bar
+    setupHotspotsBar();
+
     // Autocomplete Search & Fly-To
     setupGlobeSearch();
+}
+
+function setupHotspotsBar() {
+    const chips = document.querySelectorAll('.hotspot-chip');
+    chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            const cityName = chip.getAttribute('data-city');
+            const found = cityMarkers.find(c => c.name.toLowerCase() === cityName.toLowerCase());
+            if (found) {
+                inspectCity(found);
+            }
+        });
+    });
 }
 
 function updateUnitButtonLabel() {
@@ -353,7 +440,7 @@ function updateClock() {
     }
 }
 
-// 5. AUTOCOMPLETE SEARCH & FLY-TO INTEGRATION
+// 6. AUTOCOMPLETE SEARCH & FLY-TO INTEGRATION
 function setupGlobeSearch() {
     const cityInput = document.getElementById('city-input');
     const listContainer = document.getElementById('autocomplete-list');
@@ -423,7 +510,6 @@ function renderSuggestions(matches, val, listContainer, cityInput) {
             cityInput.value = "";
             listContainer.style.display = 'none';
 
-            // Fetch live weather for the chosen searched city
             try {
                 const url = `${OPEN_METEO_BASE}/forecast?latitude=${match.latitude}&longitude=${match.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,is_day,wind_speed_10m&daily=uv_index_max&timezone=auto`;
                 const resp = await fetch(url);
@@ -448,17 +534,14 @@ function renderSuggestions(matches, val, listContainer, cityInput) {
                     color: getTempColor(celsius)
                 };
 
-                // Add to cityMarkers if not already present
                 const exists = cityMarkers.some(c => c.name.toLowerCase() === newCity.name.toLowerCase());
                 if (!exists) {
                     cityMarkers.push(newCity);
                     if (myGlobe) {
-                        myGlobe.pointsData(cityMarkers);
-                        if (areRingsEnabled) myGlobe.ringsData(cityMarkers);
+                        myGlobe.htmlElementsData([...cityMarkers]);
                     }
                 }
 
-                // Fly to city & open inspection card
                 inspectCity(newCity);
             } catch (err) {
                 console.error("Error fetching city weather on globe:", err);
@@ -478,5 +561,4 @@ function debounce(func, wait) {
     };
 }
 
-// Start Globe on page load
 window.addEventListener('DOMContentLoaded', initGlobe);
