@@ -331,17 +331,16 @@ function setupControls() {
 
     // Day / Night Texture Toggle
     const textureBtn = document.getElementById('btn-toggle-texture');
+    const textureLabel = document.getElementById('texture-mode-label');
     if (textureBtn) {
         textureBtn.addEventListener('click', () => {
             if (currentTextureMode === 'night') {
                 currentTextureMode = 'day';
-                textureBtn.innerText = '☀️ Blue Marble';
-                textureBtn.classList.add('active');
+                if (textureLabel) textureLabel.innerText = 'Blue Marble';
                 if (myGlobe) myGlobe.globeImageUrl(TEXTURES.day);
             } else {
                 currentTextureMode = 'night';
-                textureBtn.innerText = '🌙 City Lights';
-                textureBtn.classList.remove('active');
+                if (textureLabel) textureLabel.innerText = 'City Lights';
                 if (myGlobe) myGlobe.globeImageUrl(TEXTURES.night);
             }
         });
@@ -349,10 +348,11 @@ function setupControls() {
 
     // Toggle Jet Streams (Arcs)
     const arcsBtn = document.getElementById('btn-toggle-arcs');
+    const arcsLabel = document.getElementById('arcs-mode-label');
     if (arcsBtn) {
         arcsBtn.addEventListener('click', () => {
             areArcsEnabled = !areArcsEnabled;
-            arcsBtn.classList.toggle('active', areArcsEnabled);
+            if (arcsLabel) arcsLabel.innerText = areArcsEnabled ? 'Active' : 'Off';
             if (myGlobe) {
                 myGlobe.arcsData(areArcsEnabled ? JET_STREAM_ARCS : []);
             }
@@ -361,14 +361,14 @@ function setupControls() {
 
     // Auto-spin toggle
     const spinBtn = document.getElementById('btn-toggle-spin');
+    const spinLabel = document.getElementById('spin-mode-label');
     if (spinBtn) {
         spinBtn.addEventListener('click', () => {
             isAutoSpinning = !isAutoSpinning;
             if (myGlobe) {
                 myGlobe.controls().autoRotate = isAutoSpinning;
             }
-            spinBtn.classList.toggle('active', isAutoSpinning);
-            spinBtn.innerText = isAutoSpinning ? '⏸️ Auto-Spin' : '▶️ Auto-Spin';
+            if (spinLabel) spinLabel.innerText = isAutoSpinning ? 'On' : 'Paused';
         });
     }
 
@@ -394,8 +394,55 @@ function setupControls() {
     // Left-Hand Side Fly-To Dropdown
     setupFlyToDropdown();
 
+    // Left-Hand Side Globe Controls Dropdown
+    setupControlsDropdown();
+
+    // Right-Corner Navigation Dropdown
+    setupNavDropdown();
+
     // Autocomplete Search & Fly-To
     setupGlobeSearch();
+}
+
+function setupNavDropdown() {
+    const navBtn = document.getElementById('btn-nav-dropdown');
+    const navMenu = document.getElementById('nav-dropdown-menu');
+    if (!navBtn || !navMenu) return;
+
+    navBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeAllDropdowns(navMenu);
+        const isOpen = navMenu.classList.toggle('show');
+        navBtn.classList.toggle('active', isOpen);
+    });
+}
+
+function setupControlsDropdown() {
+    const controlsBtn = document.getElementById('btn-controls-dropdown');
+    const controlsMenu = document.getElementById('controls-menu');
+    if (!controlsBtn || !controlsMenu) return;
+
+    controlsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeAllDropdowns(controlsMenu);
+        const isOpen = controlsMenu.classList.toggle('show');
+        controlsBtn.classList.toggle('active', isOpen);
+    });
+}
+
+function closeAllDropdowns(exceptMenu = null) {
+    const menus = [
+        { btn: document.getElementById('btn-fly-to-dropdown'), menu: document.getElementById('fly-to-menu') },
+        { btn: document.getElementById('btn-controls-dropdown'), menu: document.getElementById('controls-menu') },
+        { btn: document.getElementById('btn-nav-dropdown'), menu: document.getElementById('nav-dropdown-menu') }
+    ];
+
+    menus.forEach(({ btn, menu }) => {
+        if (menu && menu !== exceptMenu) {
+            menu.classList.remove('show');
+            if (btn) btn.classList.remove('active');
+        }
+    });
 }
 
 function setupFlyToDropdown() {

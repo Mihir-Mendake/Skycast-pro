@@ -25,18 +25,46 @@
     <div class="globe-ui-layer">
         <!-- Top Nav -->
         <header class="top-nav">
-            <!-- Left Side: Logo & Fly-To Scroll-Down Button -->
-            <div style="display: flex; align-items: center; gap: 1.2rem;">
+            <!-- Left Side Stack: Logo, then Fly-To, then Globe Controls -->
+            <div class="left-controls-stack">
                 <a href="index.html" class="logo">Stratos<span>Weather</span></a>
 
-                <!-- Fly To Dropdown Button -->
-                <div class="fly-to-dropdown-container">
-                    <button class="glass-dropdown-btn" id="btn-fly-to-dropdown" type="button">
-                        <span>⚡ Fly To City</span>
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="glass-dropdown-menu" id="fly-to-menu">
-                        <!-- Populated dynamically with global cities -->
+                <div class="left-buttons-group">
+                    <!-- 1. Fly To Dropdown Button -->
+                    <div class="fly-to-dropdown-container">
+                        <button class="glass-dropdown-btn" id="btn-fly-to-dropdown" type="button">
+                            <span>⚡ Fly To City</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="glass-dropdown-menu" id="fly-to-menu">
+                            <!-- Populated dynamically with global cities -->
+                        </div>
+                    </div>
+
+                    <!-- 2. Globe Controls Dropdown Button (Relocated from bottom) -->
+                    <div class="fly-to-dropdown-container">
+                        <button class="glass-dropdown-btn" id="btn-controls-dropdown" type="button">
+                            <span>⚙️ Globe Controls</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="glass-dropdown-menu controls-menu" id="controls-menu">
+                            <button class="fly-to-item" id="btn-toggle-texture" type="button">
+                                <span>🌙 Earth Texture</span>
+                                <span class="fly-temp" id="texture-mode-label">City Lights</span>
+                            </button>
+                            <button class="fly-to-item" id="btn-toggle-arcs" type="button">
+                                <span>💨 Jet Streams</span>
+                                <span class="fly-temp" id="arcs-mode-label">Active</span>
+                            </button>
+                            <button class="fly-to-item" id="btn-toggle-spin" type="button">
+                                <span>🔄 Auto-Spin</span>
+                                <span class="fly-temp" id="spin-mode-label">On</span>
+                            </button>
+                            <button class="fly-to-item" id="btn-reset-view" type="button">
+                                <span>🎯 Reset Camera</span>
+                                <span class="fly-temp">Default</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -50,13 +78,27 @@
                 <div id="autocomplete-list" class="autocomplete-suggestions glass"></div>
             </div>
 
-            <!-- Right Corner: Navigation Buttons (Dashboard, 3D Earth, Analytics) + Unit Toggle -->
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <nav class="nav-links">
-                    <a href="index.html" class="nav-link">🌤️ Dashboard</a>
-                    <a href="globe.html" class="nav-link active">🌐 3D Earth</a>
-                    <a href="analytics.html" class="nav-link">📊 Analytics</a>
-                </nav>
+            <!-- Right Corner: Single Navigation Dropdown + Controls -->
+            <div class="right-corner-group">
+                <!-- Single Navigation Menu Dropdown Button -->
+                <div class="fly-to-dropdown-container">
+                    <button class="glass-dropdown-btn" id="btn-nav-dropdown" type="button">
+                        <span>🧭 Navigation</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="glass-dropdown-menu nav-menu" id="nav-dropdown-menu">
+                        <a href="index.html" class="fly-to-item">
+                            <span>🌤️ Dashboard</span>
+                        </a>
+                        <a href="globe.html" class="fly-to-item active-page">
+                            <span>🌐 3D Earth</span>
+                            <span class="badge-active">Active</span>
+                        </a>
+                        <a href="analytics.html" class="fly-to-item">
+                            <span>📊 Analytics</span>
+                        </a>
+                    </div>
+                </div>
 
                 <div class="nav-controls">
                     <button class="unit-toggle glass-btn" id="unit-toggle" title="Switch between °C and °F">°C</button>
@@ -107,16 +149,8 @@
                 <a href="#" id="card-open-dashboard" class="globe-action-btn">Open Full Forecast in Dashboard →</a>
             </div>
 
-            <!-- Bottom Floating Toolbar -->
-            <div class="globe-toolbar">
-                <button class="globe-btn active" id="btn-toggle-texture">🌙 City Lights</button>
-                <button class="globe-btn active" id="btn-toggle-arcs">💨 Jet Streams</button>
-                <button class="globe-btn active" id="btn-toggle-spin">⏸️ Auto-Spin</button>
-                <button class="globe-btn" id="btn-reset-view">🎯 Reset Camera</button>
-            </div>
-
             <!-- Temperature Heatmap Legend -->
-            <div class="globe-legend" id="globe-legend">
+            <div class="globe-legend" id="globe-legend" style="margin-left: auto;">
                 <div class="globe-legend-title">
                     <span>Global Temperature</span>
                     <span id="legend-unit">°C</span>
