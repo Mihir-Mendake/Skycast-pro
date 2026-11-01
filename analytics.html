@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stratos Analytics // Deep Atmospheric Trends</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body class="weather-cloudy">
+    <div class="bg-gradient"></div>
+    <div class="noise-overlay"></div>
+
+    <div class="app-shell">
+        <!-- Top Nav -->
+        <header class="top-nav">
+            <a href="index.html" class="logo">Stratos<span>Weather</span></a>
+
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">🌤️ Dashboard</a>
+                <a href="globe.html" class="nav-link">🌐 3D Earth</a>
+                <a href="analytics.html" class="nav-link active">📊 Analytics</a>
+            </nav>
+
+            <div class="nav-controls">
+                <div class="time-box" id="current-time">Analytics Suite</div>
+            </div>
+        </header>
+
+        <!-- Preview Container -->
+        <main style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-top: 4rem;">
+            <div class="glass" style="max-width: 650px; padding: 3rem; border-radius: 32px;">
+                <div style="font-size: 3.5rem; margin-bottom: 1rem;">📊</div>
+                <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem;">Atmospheric Analytics Engine</h1>
+                <p style="color: var(--text-dim); font-size: 1.05rem; line-height: 1.6; margin-bottom: 2rem;">
+                    Deep graphical telemetry, 24-hour temperature spline curves, humidity vs. pressure correlation charts, and multi-day comparative bar analysis are scheduled for Page 3.
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <a href="globe.html" class="globe-action-btn" style="text-decoration: none; padding: 12px 24px; border-radius: 50px;">Explore 🌐 3D Earth View</a>
+                    <a href="index.html" class="unit-toggle" style="text-decoration: none; display: inline-flex; align-items: center;">Return to Dashboard</a>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

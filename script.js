@@ -55,36 +55,44 @@ function initApp() {
     setupHorizontalScroll('hourly-list', 'scroll-hourly-left', 'scroll-hourly-right');
     setupHorizontalScroll('favorites-bar');
 
-    // Geolocation with immediate fallback timeout (prevents infinite "Loading..." state)
-    let locationResolved = false;
-    const fallbackTimer = setTimeout(() => {
-        if (!locationResolved) {
-            locationResolved = true;
+    // Check URL parameters (e.g. redirected from 3D Globe with ?city=Tokyo)
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryCity = urlParams.get('city');
+
+    if (queryCity) {
+        fetchWeatherByCity(queryCity);
+    } else {
+        // Geolocation with immediate fallback timeout (prevents infinite "Loading..." state)
+        let locationResolved = false;
+        const fallbackTimer = setTimeout(() => {
+            if (!locationResolved) {
+                locationResolved = true;
+                fetchWeatherByCity("New York");
+            }
+        }, 3000);
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    if (locationResolved) return;
+                    locationResolved = true;
+                    clearTimeout(fallbackTimer);
+                    const { latitude, longitude } = position.coords;
+                    updateWeather(latitude, longitude, "My Location");
+                },
+                (error) => {
+                    if (locationResolved) return;
+                    locationResolved = true;
+                    clearTimeout(fallbackTimer);
+                    console.warn("Geolocation denied or failed:", error);
+                    fetchWeatherByCity("New York");
+                },
+                { timeout: 4000, maximumAge: 300000 }
+            );
+        } else {
+            clearTimeout(fallbackTimer);
             fetchWeatherByCity("New York");
         }
-    }, 3000);
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                if (locationResolved) return;
-                locationResolved = true;
-                clearTimeout(fallbackTimer);
-                const { latitude, longitude } = position.coords;
-                updateWeather(latitude, longitude, "My Location");
-            },
-            (error) => {
-                if (locationResolved) return;
-                locationResolved = true;
-                clearTimeout(fallbackTimer);
-                console.warn("Geolocation denied or failed:", error);
-                fetchWeatherByCity("New York");
-            },
-            { timeout: 4000, maximumAge: 300000 }
-        );
-    } else {
-        clearTimeout(fallbackTimer);
-        fetchWeatherByCity("New York");
     }
 
     startTime();
@@ -265,6 +273,7 @@ function renderWeather(data, cityName, country) {
     animateValue("main-temp", convertedMainTemp);
 
     const cityTitle = country ? `${cityName}, ${country}` : cityName;
+    try { localStorage.setItem('stratos_active_city', cityName); } catch (e) {}
     document.getElementById('city-name').innerText = cityTitle;
     document.getElementById('condition-text').innerText = conditionData.condition;
     document.getElementById('val-humidity').innerText = `${current.relative_humidity_2m}%`;

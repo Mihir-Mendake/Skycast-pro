@@ -117,3 +117,4 @@ A dedicated data visualization portal powered by **Chart.js** via CDN, providing
 ---
 
 *Document created for Stratos Weather hackathon development.*
+
