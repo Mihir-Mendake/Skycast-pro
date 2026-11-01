@@ -780,13 +780,17 @@ body.globe-page {
     position: absolute;
     bottom: 2.5rem;
     left: 2.5rem;
-    width: 340px;
-    background: rgba(15, 23, 42, 0.75);
+    width: 350px;
+    max-height: 80vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    background: rgba(15, 23, 42, 0.88);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(40px);
     border-radius: 24px;
-    padding: 1.5rem;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    padding: 1.4rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     animation: slideUpFade 0.35s ease;
     z-index: 30;
@@ -1255,7 +1259,171 @@ body.globe-page {
 }
 
 .glass-dropdown-menu.controls-menu {
-    width: 245px;
+    width: 275px;
+    max-height: 400px;
+}
+
+.menu-section-header {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--accent);
+    padding: 8px 12px 3px;
+    opacity: 0.9;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    margin-top: 4px;
+}
+
+.menu-section-header:first-child {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 4px;
+}
+
+.fly-temp.status-on {
+    color: #34d399 !important;
+    background: rgba(52, 211, 153, 0.12);
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.fly-temp.status-off {
+    color: var(--text-dim) !important;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* --- Educational Geography Profile inside City Card --- */
+.geo-profile-card {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.geo-profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    color: var(--accent);
+    margin-bottom: 8px;
+}
+
+.geo-badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.geo-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(56, 189, 248, 0.12);
+    color: var(--accent);
+    padding: 3px 9px;
+    border-radius: 8px;
+    border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+.geo-tag.coords {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-main);
+    border-color: rgba(255, 255, 255, 0.1);
+    font-family: monospace;
+    font-size: 0.75rem;
+}
+
+.geo-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.geo-stat-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 6px 10px;
+    border-radius: 10px;
+}
+
+.geo-stat-item span {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.geo-stat-item strong {
+    font-size: 0.82rem;
+    color: var(--text-main);
+    display: block;
+    margin-top: 2px;
+}
+
+.geo-fact-box {
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: #cbd5e1;
+    background: rgba(15, 23, 42, 0.85);
+    border-left: 3px solid var(--accent);
+    padding: 8px 12px;
+    border-radius: 0 10px 10px 0;
+}
+
+/* --- Floating Geography Layer Guide Overlay --- */
+.geo-layer-guide {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(25px);
+    border-radius: 18px;
+    padding: 12px 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    max-width: 280px;
+}
+
+.geo-layer-guide.hidden {
+    display: none;
+}
+
+.geo-guide-title {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--accent);
+    margin-bottom: 8px;
+}
+
+.geo-guide-items {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 0.73rem;
+}
+
+.geo-guide-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-main);
+}
+
+.geo-guide-color-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .fly-to-item.active-page {

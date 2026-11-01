@@ -1,6 +1,6 @@
 // ===================================================
 // Stratos Weather — 3D Earth Controller (globe.js)
-// Next-Gen Glass Badges, Jet Stream Arcs & Atmospheric Clouds
+// Real-Time Climate Sphere & Interactive Geographic Information System (GIS)
 // ===================================================
 
 const OPEN_METEO_BASE = 'https://api.open-meteo.com/v1';
@@ -17,54 +17,381 @@ const TEXTURES = {
     stars: 'https://unpkg.com/three-globe/example/img/night-sky.png'
 };
 
-// Global Jet Stream Corridors (Luminous 3D Arcs)
+// ===================================================
+// 1. DATASETS FOR GEOGRAPHY STUDENTS
+// ===================================================
+
+// Global Jet Stream Corridors (High Troposphere: ~10-12 km altitude)
 const JET_STREAM_ARCS = [
-    { startLat: 40.7128, startLng: -74.0060, endLat: 51.5074, endLng: -0.1278, color: ['#38bdf8', '#818cf8'] }, // NY -> London
-    { startLat: 51.5074, startLng: -0.1278, endLat: 48.8566, endLng: 2.3522, color: ['#818cf8', '#a855f7'] },  // London -> Paris
-    { startLat: 48.8566, startLng: 2.3522, endLat: 25.2048, endLng: 55.2708, color: ['#a855f7', '#fbbf24'] },  // Paris -> Dubai
-    { startLat: 25.2048, startLng: 55.2708, endLat: 19.0760, endLng: 72.8777, color: ['#fbbf24', '#f87171'] },  // Dubai -> Mumbai
-    { startLat: 19.0760, startLng: 72.8777, endLat: 1.3521, endLng: 103.8198, color: ['#f87171', '#34d399'] },  // Mumbai -> Singapore
-    { startLat: 1.3521, startLng: 103.8198, endLat: 35.6762, endLng: 139.6503, color: ['#34d399', '#38bdf8'] },  // Singapore -> Tokyo
-    { startLat: 35.6762, startLng: 139.6503, endLat: 21.3069, endLng: -157.8583, color: ['#38bdf8', '#60a5fa'] },// Tokyo -> Honolulu
-    { startLat: 21.3069, startLng: -157.8583, endLat: 34.0522, endLng: -118.2437, color: ['#60a5fa', '#f59e0b'] },// Honolulu -> LA
-    { startLat: 34.0522, startLng: -118.2437, endLat: 40.7128, endLng: -74.0060, color: ['#f59e0b', '#38bdf8'] }, // LA -> NY
-    { startLat: -33.8688, startLng: 151.2093, endLat: 1.3521, endLng: 103.8198, color: ['#38bdf8', '#34d399'] }, // Sydney -> Singapore
-    { startLat: 64.1466, startLng: -21.9426, endLat: 51.5074, endLng: -0.1278, color: ['#93c5fd', '#38bdf8'] },  // Reykjavik -> London
-    { startLat: -22.9068, startLng: -43.1729, endLat: -33.9249, endLng: 18.4241, color: ['#fbbf24', '#f43f5e'] }, // Rio -> Cape Town
-    { startLat: -33.9249, startLng: 18.4241, endLat: 30.0444, endLng: 31.2357, color: ['#f43f5e', '#fbbf24'] },  // Cape Town -> Cairo
-    { startLat: 30.0444, startLng: 31.2357, endLat: 25.2048, endLng: 55.2708, color: ['#fbbf24', '#f59e0b'] }   // Cairo -> Dubai
+    { type: 'jet', startLat: 40.7128, startLng: -74.0060, endLat: 51.5074, endLng: -0.1278, color: ['#38bdf8', '#818cf8'] }, // NY -> London
+    { type: 'jet', startLat: 51.5074, startLng: -0.1278, endLat: 48.8566, endLng: 2.3522, color: ['#818cf8', '#a855f7'] },  // London -> Paris
+    { type: 'jet', startLat: 48.8566, startLng: 2.3522, endLat: 25.2048, endLng: 55.2708, color: ['#a855f7', '#fbbf24'] },  // Paris -> Dubai
+    { type: 'jet', startLat: 25.2048, startLng: 55.2708, endLat: 19.0760, endLng: 72.8777, color: ['#fbbf24', '#f87171'] },  // Dubai -> Mumbai
+    { type: 'jet', startLat: 19.0760, startLng: 72.8777, endLat: 1.3521, endLng: 103.8198, color: ['#f87171', '#34d399'] },  // Mumbai -> Singapore
+    { type: 'jet', startLat: 1.3521, startLng: 103.8198, endLat: 35.6762, endLng: 139.6503, color: ['#34d399', '#38bdf8'] },  // Singapore -> Tokyo
+    { type: 'jet', startLat: 35.6762, startLng: 139.6503, endLat: 21.3069, endLng: -157.8583, color: ['#38bdf8', '#60a5fa'] },// Tokyo -> Honolulu
+    { type: 'jet', startLat: 21.3069, startLng: -157.8583, endLat: 34.0522, endLng: -118.2437, color: ['#60a5fa', '#f59e0b'] },// Honolulu -> LA
+    { type: 'jet', startLat: 34.0522, startLng: -118.2437, endLat: 40.7128, endLng: -74.0060, color: ['#f59e0b', '#38bdf8'] }, // LA -> NY
+    { type: 'jet', startLat: -33.8688, startLng: 151.2093, endLat: 1.3521, endLng: 103.8198, color: ['#38bdf8', '#34d399'] }, // Sydney -> Singapore
+    { type: 'jet', startLat: 64.1466, startLng: -21.9426, endLat: 51.5074, endLng: -0.1278, color: ['#93c5fd', '#38bdf8'] },  // Reykjavik -> London
+    { type: 'jet', startLat: -22.9068, startLng: -43.1729, endLat: -33.9249, endLng: 18.4241, color: ['#fbbf24', '#f43f5e'] }, // Rio -> Cape Town
+    { type: 'jet', startLat: -33.9249, startLng: 18.4241, endLat: 30.0444, endLng: 31.2357, color: ['#f43f5e', '#fbbf24'] },  // Cape Town -> Cairo
+    { type: 'jet', startLat: 30.0444, startLng: 31.2357, endLat: 25.2048, endLng: 55.2708, color: ['#fbbf24', '#f59e0b'] }   // Cairo -> Dubai
 ];
 
-// Major Global Weather Stations
+// Major Ocean Currents (Thermohaline Conveyor Belt: Sea-level flow)
+// Warm Currents: Crimson/Gold | Cold Currents: Deep Cyan/Ice-Blue
+const OCEAN_CURRENTS = [
+    // WARM CURRENTS
+    { type: 'ocean', name: 'Gulf Stream', startLat: 24.0, startLng: -80.0, endLat: 42.0, endLng: -45.0, color: ['#ef4444', '#f59e0b'] },
+    { type: 'ocean', name: 'North Atlantic Drift', startLat: 42.0, startLng: -45.0, endLat: 62.0, endLng: -10.0, color: ['#f59e0b', '#fbbf24'] },
+    { type: 'ocean', name: 'Kuroshio Current', startLat: 18.0, startLng: 124.0, endLat: 38.0, endLng: 144.0, color: ['#ef4444', '#f59e0b'] },
+    { type: 'ocean', name: 'North Pacific Current', startLat: 38.0, startLng: 144.0, endLat: 44.0, endLng: -140.0, color: ['#f59e0b', '#fbbf24'] },
+    { type: 'ocean', name: 'Brazil Current', startLat: -10.0, startLng: -35.0, endLat: -38.0, endLng: -52.0, color: ['#ef4444', '#f59e0b'] },
+    { type: 'ocean', name: 'Agulhas Current', startLat: -18.0, startLng: 38.0, endLat: -36.0, endLng: 20.0, color: ['#ef4444', '#f59e0b'] },
+    { type: 'ocean', name: 'East Australian Current', startLat: -18.0, startLng: 154.0, endLat: -42.0, endLng: 152.0, color: ['#ef4444', '#f59e0b'] },
+    { type: 'ocean', name: 'South Equatorial Current', startLat: -6.0, startLng: -90.0, endLat: -3.0, endLng: 160.0, color: ['#ef4444', '#fbbf24'] },
+
+    // COLD CURRENTS
+    { type: 'ocean', name: 'California Current', startLat: 48.0, startLng: -128.0, endLat: 24.0, endLng: -115.0, color: ['#06b6d4', '#38bdf8'] },
+    { type: 'ocean', name: 'Humboldt (Peru) Current', startLat: -46.0, startLng: -78.0, endLat: -12.0, endLng: -82.0, color: ['#0284c7', '#38bdf8'] },
+    { type: 'ocean', name: 'Benguela Current', startLat: -34.0, startLng: 16.0, endLat: -12.0, endLng: 10.0, color: ['#0284c7', '#38bdf8'] },
+    { type: 'ocean', name: 'Canaries Current', startLat: 36.0, startLng: -12.0, endLat: 16.0, endLng: -22.0, color: ['#06b6d4', '#38bdf8'] },
+    { type: 'ocean', name: 'Labrador Current', startLat: 64.0, startLng: -58.0, endLat: 44.0, endLng: -52.0, color: ['#93c5fd', '#38bdf8'] },
+    { type: 'ocean', name: 'Oyashio Current', startLat: 54.0, startLng: 160.0, endLat: 40.0, endLng: 144.0, color: ['#93c5fd', '#38bdf8'] },
+    { type: 'ocean', name: 'West Australian Current', startLat: -34.0, startLng: 114.0, endLat: -18.0, endLng: 110.0, color: ['#0284c7', '#38bdf8'] },
+    { type: 'ocean', name: 'Antarctic Circumpolar (W to E)', startLat: -55.0, startLng: -60.0, endLat: -55.0, endLng: 40.0, color: ['#38bdf8', '#818cf8'] },
+    { type: 'ocean', name: 'Antarctic Circumpolar (Indian/Pac)', startLat: -55.0, startLng: 40.0, endLat: -55.0, endLng: 140.0, color: ['#818cf8', '#38bdf8'] }
+];
+
+// Helper to generate circular latitude paths
+function generateLatitudeLine(lat, step = 3) {
+    const pts = [];
+    for (let lng = -180; lng <= 180; lng += step) {
+        pts.push([lat, lng]);
+    }
+    return pts;
+}
+
+// Helper to generate meridian longitude paths
+function generateLongitudeLine(lng, minLat = -85, maxLat = 85, step = 3) {
+    const pts = [];
+    for (let lat = minLat; lat <= maxLat; lat += step) {
+        pts.push([lat, lng]);
+    }
+    return pts;
+}
+
+// 1. GEOGRAPHIC GRID (Parallels, Equator, Tropics, Prime Meridian)
+const GEOGRAPHIC_GRID_PATHS = [
+    // The Equator (0° Latitude)
+    { name: 'Equator (0°)', coords: generateLatitudeLine(0), color: '#fbbf24', stroke: 2.2 },
+    // Tropic of Cancer (23.44° N)
+    { name: 'Tropic of Cancer (23.5° N)', coords: generateLatitudeLine(23.44), color: '#f97316', stroke: 1.5, dashLength: 0.6, dashGap: 0.3 },
+    // Tropic of Capricorn (23.44° S)
+    { name: 'Tropic of Capricorn (23.5° S)', coords: generateLatitudeLine(-23.44), color: '#f97316', stroke: 1.5, dashLength: 0.6, dashGap: 0.3 },
+    // Arctic Circle (66.56° N)
+    { name: 'Arctic Circle (66.5° N)', coords: generateLatitudeLine(66.56), color: '#38bdf8', stroke: 1.5, dashLength: 0.4, dashGap: 0.4 },
+    // Antarctic Circle (66.56° S)
+    { name: 'Antarctic Circle (66.5° S)', coords: generateLatitudeLine(-66.56), color: '#38bdf8', stroke: 1.5, dashLength: 0.4, dashGap: 0.4 },
+    // Prime Meridian (0° Longitude)
+    { name: 'Prime Meridian (0°)', coords: generateLongitudeLine(0), color: '#34d399', stroke: 2.0 },
+    // International Date Line (180° Longitude)
+    { name: 'International Date Line (180°)', coords: generateLongitudeLine(180), color: '#a78bfa', stroke: 1.6, dashLength: 0.5, dashGap: 0.5 }
+];
+
+// Add subtle 30° grid parallels and meridians
+[-60, -30, 30, 60].forEach(lat => {
+    GEOGRAPHIC_GRID_PATHS.push({
+        name: `Parallel ${lat}°`,
+        coords: generateLatitudeLine(lat, 5),
+        color: 'rgba(255, 255, 255, 0.16)',
+        stroke: 0.7,
+        dashLength: 0.3,
+        dashGap: 0.4
+    });
+});
+
+[-150, -120, -90, -60, -30, 30, 60, 90, 120, 150].forEach(lng => {
+    GEOGRAPHIC_GRID_PATHS.push({
+        name: `Meridian ${lng}°`,
+        coords: generateLongitudeLine(lng, -80, 80, 5),
+        color: 'rgba(255, 255, 255, 0.14)',
+        stroke: 0.6,
+        dashLength: 0.25,
+        dashGap: 0.45
+    });
+});
+
+// 2. CLIMATE ZONES / THERMAL BELTS
+const CLIMATE_ZONE_PATHS = [
+    // Polar (Frigid) North Limit (66.5° N)
+    { name: 'North Polar Zone', coords: generateLatitudeLine(66.56), color: '#38bdf8', stroke: 2.5 },
+    // Temperate North Upper Limit (35° N - Subtropical Boundary)
+    { name: 'Subtropical Boundary N (35° N)', coords: generateLatitudeLine(35.0), color: '#eab308', stroke: 1.2, dashLength: 0.5, dashGap: 0.3 },
+    // Tropical / Torrid Zone North (23.44° N)
+    { name: 'Tropical Zone North (23.5° N)', coords: generateLatitudeLine(23.44), color: '#f97316', stroke: 2.2 },
+    // Tropical / Torrid Zone South (23.44° S)
+    { name: 'Tropical Zone South (23.5° S)', coords: generateLatitudeLine(-23.44), color: '#f97316', stroke: 2.2 },
+    // Temperate South Upper Limit (35° S - Subtropical Boundary)
+    { name: 'Subtropical Boundary S (35° S)', coords: generateLatitudeLine(-35.0), color: '#eab308', stroke: 1.2, dashLength: 0.5, dashGap: 0.3 },
+    // Polar (Frigid) South Limit (66.5° S)
+    { name: 'South Polar Zone', coords: generateLatitudeLine(-66.56), color: '#38bdf8', stroke: 2.5 }
+];
+
+// 3. TECTONIC PLATE BOUNDARIES & PACIFIC RING OF FIRE
+const TECTONIC_PATHS = [
+    // Pacific Ring of Fire (Western Rim)
+    {
+        name: 'Pacific Ring of Fire (West)',
+        coords: [
+            [-45.0, 167.0], [-41.0, 174.0], [-21.0, -175.0], [-15.0, 167.0], [-5.0, 150.0],
+            [1.0, 127.0], [14.0, 144.0], [35.0, 140.0], [45.0, 151.0], [55.0, 162.0],
+            [53.0, 175.0], [52.0, -175.0], [55.0, -160.0], [60.0, -147.0]
+        ],
+        color: '#ff4d4d',
+        stroke: 2.2,
+        dashLength: 0.8,
+        dashGap: 0.2,
+        animateTime: 3000
+    },
+    // Pacific Ring of Fire (Eastern Rim / San Andreas & Andes)
+    {
+        name: 'Pacific Ring of Fire (East)',
+        coords: [
+            [60.0, -147.0], [50.0, -128.0], [45.0, -124.0], [38.0, -122.0], [34.0, -118.0],
+            [23.0, -107.0], [16.0, -98.0], [9.0, -84.0], [1.0, -80.0], [-12.0, -77.0],
+            [-23.0, -70.0], [-38.0, -73.0], [-54.0, -70.0]
+        ],
+        color: '#ff4d4d',
+        stroke: 2.2,
+        dashLength: 0.8,
+        dashGap: 0.2,
+        animateTime: 3000
+    },
+    // Mid-Atlantic Ridge Divergent Rift
+    {
+        name: 'Mid-Atlantic Ridge',
+        coords: [
+            [79.0, 3.0], [71.0, -8.0], [64.0, -18.0], [52.0, -32.0], [38.0, -28.0],
+            [15.0, -45.0], [0.0, -25.0], [-12.0, -14.0], [-35.0, -16.0], [-54.0, 3.0]
+        ],
+        color: '#ff922b',
+        stroke: 1.8,
+        dashLength: 0.6,
+        dashGap: 0.3
+    },
+    // Alpine-Himalayan Orogenic Belt
+    {
+        name: 'Alpine-Himalayan Belt',
+        coords: [
+            [36.0, -6.0], [40.0, 15.0], [39.0, 26.0], [39.0, 40.0], [35.0, 51.0],
+            [34.0, 68.0], [28.0, 85.0], [25.0, 95.0], [15.0, 98.0], [2.0, 100.0],
+            [-7.0, 107.0], [-9.0, 120.0]
+        ],
+        color: '#ff6b6b',
+        stroke: 1.8
+    },
+    // East African Rift System
+    {
+        name: 'East African Rift',
+        coords: [
+            [15.0, 41.0], [11.0, 42.0], [4.0, 36.0], [-2.0, 36.0], [-6.0, 30.0],
+            [-12.0, 34.0], [-18.0, 35.0]
+        ],
+        color: '#fa5252',
+        stroke: 1.8
+    }
+];
+
+// Major Global Weather & Geography Stations
 const GLOBAL_HUBS = [
-    { name: "Tokyo", country: "Japan", flag: "🇯🇵", lat: 35.6762, lng: 139.6503 },
-    { name: "Mumbai", country: "India", flag: "🇮🇳", lat: 19.0760, lng: 72.8777 },
-    { name: "London", country: "United Kingdom", flag: "🇬🇧", lat: 51.5074, lng: -0.1278 },
-    { name: "New York", country: "United States", flag: "🇺🇸", lat: 40.7128, lng: -74.0060 },
-    { name: "Sydney", country: "Australia", flag: "🇦🇺", lat: -33.8688, lng: 151.2093 },
-    { name: "Cairo", country: "Egypt", flag: "🇪🇬", lat: 30.0444, lng: 31.2357 },
-    { name: "Paris", country: "France", flag: "🇫🇷", lat: 48.8566, lng: 2.3522 },
-    { name: "Dubai", country: "UAE", flag: "🇦🇪", lat: 25.2048, lng: 55.2708 },
-    { name: "Singapore", country: "Singapore", flag: "🇸🇬", lat: 1.3521, lng: 103.8198 },
-    { name: "Rio de Janeiro", country: "Brazil", flag: "🇧🇷", lat: -22.9068, lng: -43.1729 },
-    { name: "Los Angeles", country: "United States", flag: "🇺🇸", lat: 34.0522, lng: -118.2437 },
-    { name: "Cape Town", country: "South Africa", flag: "🇿🇦", lat: -33.9249, lng: 18.4241 },
-    { name: "Reykjavik", country: "Iceland", flag: "🇮🇸", lat: 64.1466, lng: -21.9426 },
-    { name: "Seoul", country: "South Korea", flag: "🇰🇷", lat: 37.5665, lng: 126.9780 },
-    { name: "Berlin", country: "Germany", flag: "🇩🇪", lat: 52.5200, lng: 13.4050 },
-    { name: "Buenos Aires", country: "Argentina", flag: "🇦🇷", lat: -34.6037, lng: -58.3816 },
-    { name: "Bangkok", country: "Thailand", flag: "🇹🇭", lat: 13.7563, lng: 100.5018 },
-    { name: "Nairobi", country: "Kenya", flag: "🇰🇪", lat: -1.2921, lng: 36.8219 },
-    { name: "Vancouver", country: "Canada", flag: "🇨🇦", lat: 49.2827, lng: -123.1207 },
-    { name: "Honolulu", country: "United States", flag: "🌺", lat: 21.3069, lng: -157.8583 },
-    { name: "Moscow", country: "Russia", flag: "🇷🇺", lat: 55.7558, lng: 37.6173 }
+    { 
+        name: "Tokyo", country: "Japan", flag: "🇯🇵", lat: 35.6762, lng: 139.6503,
+        elevation: "40 m ASL",
+        koppen: "Cfa — Humid Subtropical",
+        zone: "North Temperate Zone",
+        wind: "Prevailing Westerlies",
+        geoNote: "Located along the Pacific Ring of Fire at the triple junction of 3 tectonic plates."
+    },
+    { 
+        name: "Mumbai", country: "India", flag: "🇮🇳", lat: 19.0760, lng: 72.8777,
+        elevation: "14 m ASL",
+        koppen: "Aw — Tropical Wet & Dry",
+        zone: "Torrid / Tropical Zone",
+        wind: "Arabian Sea Monsoon",
+        geoNote: "Governed by seasonal monsoon reversals driven by the shift of the thermal equator."
+    },
+    { 
+        name: "London", country: "United Kingdom", flag: "🇬🇧", lat: 51.5074, lng: -0.1278,
+        elevation: "11 m ASL",
+        koppen: "Cfb — Oceanic (Maritime)",
+        zone: "North Temperate Zone",
+        wind: "Southwesterly Westerlies",
+        geoNote: "Sitting directly on the Prime Meridian (0° Longitude); warmed by the Gulf Stream drift."
+    },
+    { 
+        name: "New York", country: "United States", flag: "🇺🇸", lat: 40.7128, lng: -74.0060,
+        elevation: "10 m ASL",
+        koppen: "Dfa — Humid Continental",
+        zone: "North Temperate Zone",
+        wind: "Westerlies / Nor'easters",
+        geoNote: "Estuary harbor subject to clashes between continental polar and maritime tropical air."
+    },
+    { 
+        name: "Sydney", country: "Australia", flag: "🇦🇺", lat: -33.8688, lng: 151.2093,
+        elevation: "19 m ASL",
+        koppen: "Cfa — Humid Subtropical",
+        zone: "South Temperate Zone",
+        wind: "East Australian Current influence",
+        geoNote: "Coastal basin bordered by the Tasman Sea and Great Dividing Mountain Range."
+    },
+    { 
+        name: "Cairo", country: "Egypt", flag: "🇪🇬", lat: 30.0444, lng: 31.2357,
+        elevation: "23 m ASL",
+        koppen: "BWh — Hot Desert (Hyper-Arid)",
+        zone: "Subtropical Arid Belt",
+        wind: "Northeast Trade Winds / Khamsin",
+        geoNote: "Located in the Sahara rain-shadow; arid climate created by Hadley Cell subsidence."
+    },
+    { 
+        name: "Paris", country: "France", flag: "🇫🇷", lat: 48.8566, lng: 2.3522,
+        elevation: "35 m ASL",
+        koppen: "Cfb — Oceanic",
+        zone: "North Temperate Zone",
+        wind: "Atlantic Westerlies",
+        geoNote: "Situated in the low-lying Seine River sedimentary basin of Western Europe."
+    },
+    { 
+        name: "Dubai", country: "UAE", flag: "🇦🇪", lat: 25.2048, lng: 55.2708,
+        elevation: "5 m ASL",
+        koppen: "BWh — Hot Desert",
+        zone: "Subtropical Arid Belt",
+        wind: "Northwesterly Shamal",
+        geoNote: "Positioned directly north of the Tropic of Cancer along the Persian Gulf coast."
+    },
+    { 
+        name: "Singapore", country: "Singapore", flag: "🇸🇬", lat: 1.3521, lng: 103.8198,
+        elevation: "15 m ASL",
+        koppen: "Af — Tropical Rainforest",
+        zone: "Equatorial Doldrums (ITCZ)",
+        wind: "Intertropical Convergence",
+        geoNote: "Just 137 km (1° N) from the Equator; experiences constant daily year-round solar insolation."
+    },
+    { 
+        name: "Rio de Janeiro", country: "Brazil", flag: "🇧🇷", lat: -22.9068, lng: -43.1729,
+        elevation: "2 m ASL",
+        koppen: "Aw — Tropical Savanna",
+        zone: "South Tropical Zone",
+        wind: "Southeast Trade Winds",
+        geoNote: "Flanked by the Atlantic Ocean and the granite peaks of the Serra do Mar."
+    },
+    { 
+        name: "Los Angeles", country: "United States", flag: "🇺🇸", lat: 34.0522, lng: -118.2437,
+        elevation: "87 m ASL",
+        koppen: "Csa — Mediterranean",
+        zone: "North Temperate Zone",
+        wind: "Santa Ana Winds / Sea Breeze",
+        geoNote: "Sitting on the active San Andreas fault plate boundary; cooled by the California Current."
+    },
+    { 
+        name: "Cape Town", country: "South Africa", flag: "🇿🇦", lat: -33.9249, lng: 18.4241,
+        elevation: "12 m ASL",
+        koppen: "Csb — Mediterranean",
+        zone: "South Temperate Zone",
+        wind: "Southeasterly 'Cape Doctor'",
+        geoNote: "Meeting point of the cold Benguela ocean current and the warm Agulhas current."
+    },
+    { 
+        name: "Reykjavik", country: "Iceland", flag: "🇮🇸", lat: 64.1466, lng: -21.9426,
+        elevation: "15 m ASL",
+        koppen: "Cfc — Subpolar Oceanic",
+        zone: "Sub-Arctic Circle Fringe",
+        wind: "Polar Front Cyclones",
+        geoNote: "Directly straddles the Mid-Atlantic Ridge divergent rift between North America and Eurasia."
+    },
+    { 
+        name: "Seoul", country: "South Korea", flag: "🇰🇷", lat: 37.5665, lng: 126.9780,
+        elevation: "38 m ASL",
+        koppen: "Dwa — Monsoon Continental",
+        zone: "North Temperate Zone",
+        wind: "Siberian High / Asian Monsoon",
+        geoNote: "Peninsular geography creating extreme thermal swings between continental winter and tropical summer."
+    },
+    { 
+        name: "Berlin", country: "Germany", flag: "🇩🇪", lat: 52.5200, lng: 13.4050,
+        elevation: "34 m ASL",
+        koppen: "Cfb — Temperate Oceanic",
+        zone: "North Temperate Zone",
+        wind: "Maritime Westerlies",
+        geoNote: "Located on the flat glacial spillway of the vast North European Plain."
+    },
+    { 
+        name: "Buenos Aires", country: "Argentina", flag: "🇦🇷", lat: -34.6037, lng: -58.3816,
+        elevation: "25 m ASL",
+        koppen: "Cfa — Humid Subtropical",
+        zone: "South Temperate Zone",
+        wind: "Sudestada / Pampero Winds",
+        geoNote: "Located on the western shore of the Río de la Plata estuary facing the fertile Pampas flatlands."
+    },
+    { 
+        name: "Bangkok", country: "Thailand", flag: "🇹🇭", lat: 13.7563, lng: 100.5018,
+        elevation: "2 m ASL",
+        koppen: "Aw — Tropical Savanna",
+        zone: "Torrid / Tropical Zone",
+        wind: "Southwest Monsoon",
+        geoNote: "Low-lying alluvial flood plain delta along the Chao Phraya River, prone to tidal surge."
+    },
+    { 
+        name: "Nairobi", country: "Kenya", flag: "🇰🇪", lat: -1.2921, lng: 36.8219,
+        elevation: "1,795 m ASL",
+        koppen: "Cwb — Subtropical Highland",
+        zone: "Equatorial Highland",
+        wind: "Equatorial Trade Winds",
+        geoNote: "High elevation moderates equatorial heat; sits beside the Great East African Rift Valley."
+    },
+    { 
+        name: "Vancouver", country: "Canada", flag: "🇨🇦", lat: 49.2827, lng: -123.1207,
+        elevation: "70 m ASL",
+        koppen: "Cfb — Marine Oceanic",
+        zone: "North Temperate Zone",
+        wind: "North Pacific Westerlies",
+        geoNote: "Orographic rain shadow created by the coastal Coast and Cascade Mountain ranges."
+    },
+    { 
+        name: "Honolulu", country: "United States", flag: "🌺", lat: 21.3069, lng: -157.8583,
+        elevation: "6 m ASL",
+        koppen: "As — Tropical Dry-Summer",
+        zone: "Tropical Belt (Near Cancer)",
+        wind: "Northeast Trade Winds",
+        geoNote: "Volcanic shield island chain formed over a stationary mantle thermal plume (hotspot)."
+    },
+    { 
+        name: "Moscow", country: "Russia", flag: "🇷🇺", lat: 55.7558, lng: 37.6173,
+        elevation: "156 m ASL",
+        koppen: "Dfb — Humid Continental",
+        zone: "North Temperate Zone",
+        wind: "Polar Continental Air Masses",
+        geoNote: "Deep continental interior situated far from oceans, causing sharp seasonal temperature ranges."
+    }
 ];
 
-// App State
+// ===================================================
+// 2. APP STATE & LAYER TOGGLES
+// ===================================================
+
 let currentUnit = localStorage.getItem('stratos_unit') || localStorage.getItem('skycast_unit') || 'C';
-let isAutoSpinning = true;
-let areArcsEnabled = true;
 let currentTextureMode = 'night'; // 'night' or 'day'
+let isAutoSpinning = true;
+
+// Geography Layer Flags
+let areCloudsEnabled = true;
+let areArcsEnabled = true;         // Jet Streams
+let areCurrentsEnabled = false;    // Ocean Currents
+let isGridEnabled = false;          // Geographic Grid
+let areZonesEnabled = false;        // Climate Belts
+let areTectonicsEnabled = false;    // Tectonic Faults
+
 let myGlobe = null;
 let cityMarkers = [];
 let activeInspectedCity = null;
@@ -105,7 +432,39 @@ function mapWeatherCode(code, isDay = true) {
     return { condition: "Clear", icon: "🌤️" };
 }
 
-// 1. INITIALIZE 3D GLOBE
+// Compute active combined arcs (Jet Streams + Ocean Currents)
+function getActiveArcs() {
+    let arcs = [];
+    if (areArcsEnabled) arcs = arcs.concat(JET_STREAM_ARCS);
+    if (areCurrentsEnabled) arcs = arcs.concat(OCEAN_CURRENTS);
+    return arcs;
+}
+
+// Compute active combined paths (Grid + Climate Zones + Tectonics)
+function getActivePaths() {
+    let paths = [];
+    if (isGridEnabled) paths = paths.concat(GEOGRAPHIC_GRID_PATHS);
+    if (areZonesEnabled) paths = paths.concat(CLIMATE_ZONE_PATHS);
+    if (areTectonicsEnabled) paths = paths.concat(TECTONIC_PATHS);
+    return paths;
+}
+
+// Refresh 3D Arcs on globe
+function updateGlobeArcs() {
+    if (!myGlobe) return;
+    myGlobe.arcsData(getActiveArcs());
+}
+
+// Refresh 3D Paths on globe
+function updateGlobePaths() {
+    if (!myGlobe) return;
+    myGlobe.pathsData(getActivePaths());
+}
+
+// ===================================================
+// 3. INITIALIZE 3D GLOBE
+// ===================================================
+
 function initGlobe() {
     const container = document.getElementById('globe-container');
     if (!container) return;
@@ -116,7 +475,8 @@ function initGlobe() {
         .backgroundImageUrl(TEXTURES.stars)
         .atmosphereColor('#38bdf8')
         .atmosphereAltitude(0.24)
-        // Modern Floating Glass Badges (Replaces Bulky Cylinders!)
+
+        // Modern Floating Glass Badges
         .htmlElementsData(cityMarkers)
         .htmlLat(d => d.lat)
         .htmlLng(d => d.lng)
@@ -134,18 +494,31 @@ function initGlobe() {
             el.addEventListener('click', () => inspectCity(d));
             return el;
         })
-        // Luminous Jet Stream Arcs
-        .arcsData(areArcsEnabled ? JET_STREAM_ARCS : [])
+
+        // Luminous Arcs (Tropospheric Jet Streams & Sea-Level Ocean Currents)
+        .arcsData(getActiveArcs())
         .arcStartLat(d => d.startLat)
         .arcStartLng(d => d.startLng)
         .arcEndLat(d => d.endLat)
         .arcEndLng(d => d.endLng)
         .arcColor(d => d.color)
-        .arcAltitude(0.25)
-        .arcStroke(0.85)
-        .arcDashLength(0.4)
-        .arcDashGap(1.2)
-        .arcDashAnimateTime(2200);
+        .arcAltitude(d => d.type === 'ocean' ? 0.035 : 0.25)
+        .arcStroke(d => d.type === 'ocean' ? 1.35 : 0.85)
+        .arcDashLength(d => d.type === 'ocean' ? 0.35 : 0.45)
+        .arcDashGap(d => d.type === 'ocean' ? 0.8 : 1.2)
+        .arcDashAnimateTime(d => d.type === 'ocean' ? 2800 : 2200)
+
+        // Physical Geography Paths (Grid, Climate Zones, Tectonic Faults)
+        .pathsData(getActivePaths())
+        .pathPoints(d => d.coords)
+        .pathPointLat(p => p[0])
+        .pathPointLng(p => p[1])
+        .pathPointAlt(d => d.alt || 0.008)
+        .pathColor(d => d.color)
+        .pathStroke(d => d.stroke || 1.2)
+        .pathDashLength(d => d.dashLength || 1)
+        .pathDashGap(d => d.dashGap || 0)
+        .pathDashAnimateTime(d => d.animateTime || 0);
 
     // Initial View Position
     myGlobe.pointOfView({ lat: 20, lng: 35, altitude: 2.1 });
@@ -168,9 +541,10 @@ function initGlobe() {
     setInterval(updateClock, 1000);
 
     fetchGlobalHotspots();
+    updateLayerGuide();
 }
 
-// 2. SETUP 3D TRANSLUCENT CLOUDS
+// Setup 3D Atmosphere Clouds
 function setupClouds() {
     if (!window.THREE || !myGlobe) return;
 
@@ -187,11 +561,12 @@ function setupClouds() {
             });
 
             cloudsMesh = new THREE.Mesh(geometry, material);
+            cloudsMesh.visible = areCloudsEnabled;
             myGlobe.scene().add(cloudsMesh);
 
             // Cloud Drift Animation
             (function rotateClouds() {
-                if (cloudsMesh) {
+                if (cloudsMesh && cloudsMesh.visible) {
                     cloudsMesh.rotation.y += 0.00045;
                 }
                 requestAnimationFrame(rotateClouds);
@@ -202,7 +577,10 @@ function setupClouds() {
     }
 }
 
-// 3. FETCH LIVE DATA FOR GLOBAL HUBS
+// ===================================================
+// 4. FETCH LIVE DATA FOR GLOBAL HUBS
+// ===================================================
+
 async function fetchGlobalHotspots() {
     const fetchPromises = GLOBAL_HUBS.map(async (city) => {
         try {
@@ -269,7 +647,10 @@ async function fetchGlobalHotspots() {
     }
 }
 
-// 4. INSPECT CITY (Camera Fly-To & Open Floating Panel)
+// ===================================================
+// 5. INSPECT CITY (Fly-To & Educational Profile)
+// ===================================================
+
 function inspectCity(city) {
     activeInspectedCity = city;
 
@@ -277,7 +658,7 @@ function inspectCity(city) {
         myGlobe.pointOfView({ lat: city.lat, lng: city.lng, altitude: 1.55 }, 1400);
     }
 
-    // Populate Inspector Card
+    // Basic Weather Information
     document.getElementById('card-city-name').innerText = city.name;
     document.getElementById('card-country-name').innerText = city.country || 'Global Location';
     document.getElementById('card-temp').innerText = formatTemp(city.temp);
@@ -287,6 +668,26 @@ function inspectCity(city) {
     document.getElementById('card-wind').innerText = formatWindSpeed(city.wind);
     document.getElementById('card-humidity').innerText = `${city.humidity}%`;
     document.getElementById('card-uv').innerText = city.uv || 3;
+
+    // Educational Geography Profile
+    const latFormatted = `${Math.abs(city.lat).toFixed(2)}° ${city.lat >= 0 ? 'N' : 'S'}`;
+    const lngFormatted = `${Math.abs(city.lng).toFixed(2)}° ${city.lng >= 0 ? 'E' : 'W'}`;
+    const coordsEl = document.getElementById('card-geo-coords');
+    if (coordsEl) coordsEl.innerText = `${latFormatted}, ${lngFormatted}`;
+
+    const zoneEl = document.getElementById('card-geo-zone');
+    if (zoneEl) zoneEl.innerText = city.zone || computeClimateZone(city.lat);
+
+    const elevEl = document.getElementById('card-geo-elevation');
+    if (elevEl) elevEl.innerText = city.elevation || '25 m ASL';
+
+    const koppenEl = document.getElementById('card-geo-koppen');
+    if (koppenEl) koppenEl.innerText = city.koppen || computeKoppenClass(city.lat, city.temp);
+
+    const noteEl = document.getElementById('card-geo-note');
+    if (noteEl) {
+        noteEl.innerText = city.geoNote || `Geographic station located in the ${computeClimateZone(city.lat)} influenced by atmospheric global pressure regimes.`;
+    }
 
     // Link button to Dashboard
     const openBtn = document.getElementById('card-open-dashboard');
@@ -305,7 +706,26 @@ function inspectCity(city) {
     } catch (e) {}
 }
 
-// 5. UI CONTROLS & EVENT LISTENERS
+function computeClimateZone(lat) {
+    const absLat = Math.abs(lat);
+    if (absLat >= 66.56) return 'Polar (Frigid) Zone';
+    if (absLat <= 23.44) return 'Torrid (Tropical) Zone';
+    if (absLat <= 35.0) return 'Subtropical Arid Belt';
+    return (lat > 0 ? 'North' : 'South') + ' Temperate Zone';
+}
+
+function computeKoppenClass(lat, celsius) {
+    const absLat = Math.abs(lat);
+    if (absLat >= 66.56) return 'ET — Polar Tundra';
+    if (absLat <= 23.44) return celsius > 26 ? 'Af — Tropical Rainforest' : 'Aw — Tropical Savanna';
+    if (absLat <= 35.0) return 'Csa — Mediterranean / Subtropical';
+    return 'Cfb — Oceanic Temperate';
+}
+
+// ===================================================
+// 6. UI CONTROLS & DYNAMIC LAYER TOGGLES
+// ===================================================
+
 function setupControls() {
     // Unit Toggle (°C / °F)
     const unitBtn = document.getElementById('unit-toggle');
@@ -329,7 +749,7 @@ function setupControls() {
         });
     }
 
-    // Day / Night Texture Toggle
+    // 1. Day / Night Surface Texture
     const textureBtn = document.getElementById('btn-toggle-texture');
     const textureLabel = document.getElementById('texture-mode-label');
     if (textureBtn) {
@@ -346,20 +766,80 @@ function setupControls() {
         });
     }
 
-    // Toggle Jet Streams (Arcs)
+    // 2. Cloud Atmosphere
+    const cloudsBtn = document.getElementById('btn-toggle-clouds');
+    const cloudsLabel = document.getElementById('clouds-mode-label');
+    if (cloudsBtn) {
+        cloudsBtn.addEventListener('click', () => {
+            areCloudsEnabled = !areCloudsEnabled;
+            setButtonStatus(cloudsLabel, areCloudsEnabled);
+            if (cloudsMesh) {
+                cloudsMesh.visible = areCloudsEnabled;
+            }
+        });
+    }
+
+    // 3. Jet Streams (Troposphere Arcs)
     const arcsBtn = document.getElementById('btn-toggle-arcs');
     const arcsLabel = document.getElementById('arcs-mode-label');
     if (arcsBtn) {
         arcsBtn.addEventListener('click', () => {
             areArcsEnabled = !areArcsEnabled;
-            if (arcsLabel) arcsLabel.innerText = areArcsEnabled ? 'Active' : 'Off';
-            if (myGlobe) {
-                myGlobe.arcsData(areArcsEnabled ? JET_STREAM_ARCS : []);
-            }
+            setButtonStatus(arcsLabel, areArcsEnabled);
+            updateGlobeArcs();
+            updateLayerGuide();
         });
     }
 
-    // Auto-spin toggle
+    // 4. Ocean Currents (Thermohaline Arcs)
+    const currentsBtn = document.getElementById('btn-toggle-currents');
+    const currentsLabel = document.getElementById('currents-mode-label');
+    if (currentsBtn) {
+        currentsBtn.addEventListener('click', () => {
+            areCurrentsEnabled = !areCurrentsEnabled;
+            setButtonStatus(currentsLabel, areCurrentsEnabled);
+            updateGlobeArcs();
+            updateLayerGuide();
+        });
+    }
+
+    // 5. Geographic Grid (Parallels & Prime Meridian)
+    const gridBtn = document.getElementById('btn-toggle-grid');
+    const gridLabel = document.getElementById('grid-mode-label');
+    if (gridBtn) {
+        gridBtn.addEventListener('click', () => {
+            isGridEnabled = !isGridEnabled;
+            setButtonStatus(gridLabel, isGridEnabled);
+            updateGlobePaths();
+            updateLayerGuide();
+        });
+    }
+
+    // 6. Climate Belts
+    const zonesBtn = document.getElementById('btn-toggle-zones');
+    const zonesLabel = document.getElementById('zones-mode-label');
+    if (zonesBtn) {
+        zonesBtn.addEventListener('click', () => {
+            areZonesEnabled = !areZonesEnabled;
+            setButtonStatus(zonesLabel, areZonesEnabled);
+            updateGlobePaths();
+            updateLayerGuide();
+        });
+    }
+
+    // 7. Tectonic Faults & Ring of Fire
+    const tectonicsBtn = document.getElementById('btn-toggle-tectonics');
+    const tectonicsLabel = document.getElementById('tectonics-mode-label');
+    if (tectonicsBtn) {
+        tectonicsBtn.addEventListener('click', () => {
+            areTectonicsEnabled = !areTectonicsEnabled;
+            setButtonStatus(tectonicsLabel, areTectonicsEnabled);
+            updateGlobePaths();
+            updateLayerGuide();
+        });
+    }
+
+    // 8. Auto-spin Toggle
     const spinBtn = document.getElementById('btn-toggle-spin');
     const spinLabel = document.getElementById('spin-mode-label');
     if (spinBtn) {
@@ -368,11 +848,14 @@ function setupControls() {
             if (myGlobe) {
                 myGlobe.controls().autoRotate = isAutoSpinning;
             }
-            if (spinLabel) spinLabel.innerText = isAutoSpinning ? 'On' : 'Paused';
+            if (spinLabel) {
+                spinLabel.innerText = isAutoSpinning ? 'On' : 'Paused';
+                spinLabel.className = isAutoSpinning ? 'fly-temp status-on' : 'fly-temp status-off';
+            }
         });
     }
 
-    // Reset Camera
+    // 9. Reset Camera View
     const resetBtn = document.getElementById('btn-reset-view');
     if (resetBtn) {
         resetBtn.addEventListener('click', () => {
@@ -391,17 +874,102 @@ function setupControls() {
         });
     }
 
-    // Left-Hand Side Fly-To Dropdown
+    // Dropdown Handlers
     setupFlyToDropdown();
-
-    // Left-Hand Side Globe Controls Dropdown
     setupControlsDropdown();
-
-    // Right-Corner Navigation Dropdown
     setupNavDropdown();
-
-    // Autocomplete Search & Fly-To
     setupGlobeSearch();
+}
+
+function setButtonStatus(labelEl, isActive) {
+    if (!labelEl) return;
+    labelEl.innerText = isActive ? 'Active' : 'Off';
+    labelEl.className = isActive ? 'fly-temp status-on' : 'fly-temp status-off';
+}
+
+// Update Active Layer Guide Overlay
+function updateLayerGuide() {
+    const guideCard = document.getElementById('geo-layer-guide');
+    const itemsContainer = document.getElementById('geo-guide-items');
+    if (!guideCard || !itemsContainer) return;
+
+    const activeRows = [];
+
+    if (areArcsEnabled) {
+        activeRows.push(`
+            <div class="geo-guide-row">
+                <span class="geo-guide-color-dot" style="background: #38bdf8;"></span>
+                <span>Jet Streams (Troposphere ~10km)</span>
+            </div>
+        `);
+    }
+
+    if (areCurrentsEnabled) {
+        activeRows.push(`
+            <div class="geo-guide-row">
+                <span class="geo-guide-color-dot" style="background: #ef4444;"></span>
+                <span>Warm Ocean Currents (Gulf / Kuroshio)</span>
+            </div>
+            <div class="geo-guide-row">
+                <span class="geo-guide-color-dot" style="background: #06b6d4;"></span>
+                <span>Cold Currents (California / Humboldt)</span>
+            </div>
+        `);
+    }
+
+    if (isGridEnabled) {
+        activeRows.push(`
+            <div class="geo-guide-row">
+                <span class="geo-guide-color-dot" style="background: #fbbf24;"></span>
+                <span>Equator (0° Latitude)</span>
+            </div>
+            <div class="geo-guide-row">
+                <span class="geo-guide-color-dot" style="background: #f97316;"></span>
+                <span>Tropics of Cancer & Capricorn (23.5°)</span>
+            </div>
+            <div class="geo-guide-row">
+                <span class="geo-guide-color-dot" style="background: #34d399;"></span>
+                <span>Prime Meridian (0° Longitude)</span>
+            </div>
+        `);
+    }
+
+    if (areZonesEnabled) {
+        activeRows.push(`
+            <div class="geo-guide-row">
+                <span class="geo-guide-color-dot" style="background: #f97316;"></span>
+                <span>Torrid (Tropical) Zone</span>
+            </div>
+            <div class="geo-guide-row">
+                <span class="geo-guide-color-dot" style="background: #eab308;"></span>
+                <span>Subtropical Arid Belts</span>
+            </div>
+            <div class="geo-guide-row">
+                <span class="geo-guide-color-dot" style="background: #38bdf8;"></span>
+                <span>Polar (Frigid) Zones</span>
+            </div>
+        `);
+    }
+
+    if (areTectonicsEnabled) {
+        activeRows.push(`
+            <div class="geo-guide-row">
+                <span class="geo-guide-color-dot" style="background: #ff4d4d;"></span>
+                <span>Pacific Ring of Fire & Fault Lines</span>
+            </div>
+            <div class="geo-guide-row">
+                <span class="geo-guide-color-dot" style="background: #ff922b;"></span>
+                <span>Mid-Atlantic Ridge (Divergent Rift)</span>
+            </div>
+        `);
+    }
+
+    if (activeRows.length > 0) {
+        itemsContainer.innerHTML = activeRows.join('');
+        guideCard.classList.remove('hidden');
+    } else {
+        guideCard.classList.add('hidden');
+    }
 }
 
 function setupNavDropdown() {
@@ -454,6 +1022,7 @@ function setupFlyToDropdown() {
 
     dropdownBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        closeAllDropdowns(dropdownMenu);
         const isOpen = dropdownMenu.classList.toggle('show');
         dropdownBtn.classList.toggle('active', isOpen);
     });
@@ -526,7 +1095,10 @@ function updateClock() {
     }
 }
 
-// 6. AUTOCOMPLETE SEARCH & FLY-TO INTEGRATION
+// ===================================================
+// 7. AUTOCOMPLETE SEARCH & FLY-TO INTEGRATION
+// ===================================================
+
 function setupGlobeSearch() {
     const cityInput = document.getElementById('city-input');
     const listContainer = document.getElementById('autocomplete-list');
@@ -605,6 +1177,8 @@ function renderSuggestions(matches, val, listContainer, cityInput) {
                 const celsius = current.temperature_2m !== undefined ? current.temperature_2m : 20;
                 const { condition, icon } = mapWeatherCode(current.weather_code || 0, current.is_day === 1);
 
+                const elevation = match.elevation !== undefined ? `${Math.round(match.elevation)} m ASL` : '35 m ASL';
+
                 const newCity = {
                     name: match.name,
                     country: match.country,
@@ -617,7 +1191,11 @@ function renderSuggestions(matches, val, listContainer, cityInput) {
                     uv: daily.uv_index_max && daily.uv_index_max.length > 0 ? Math.round(daily.uv_index_max[0]) : 4,
                     condition,
                     icon,
-                    color: getTempColor(celsius)
+                    color: getTempColor(celsius),
+                    elevation,
+                    koppen: computeKoppenClass(match.latitude, celsius),
+                    zone: computeClimateZone(match.latitude),
+                    geoNote: `Geographic coordinates: ${Math.abs(match.latitude).toFixed(2)}° ${match.latitude >= 0 ? 'N' : 'S'}, ${Math.abs(match.longitude).toFixed(2)}° ${match.longitude >= 0 ? 'E' : 'W'}.`
                 };
 
                 const exists = cityMarkers.some(c => c.name.toLowerCase() === newCity.name.toLowerCase());

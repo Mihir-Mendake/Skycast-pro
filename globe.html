@@ -48,17 +48,44 @@
                             <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="glass-dropdown-menu controls-menu" id="controls-menu">
+                            <div class="menu-section-header">Base Layers</div>
                             <button class="fly-to-item" id="btn-toggle-texture" type="button">
-                                <span>🌙 Earth Texture</span>
+                                <span>🌙 Earth Surface</span>
                                 <span class="fly-temp" id="texture-mode-label">City Lights</span>
                             </button>
+                            <button class="fly-to-item" id="btn-toggle-clouds" type="button">
+                                <span>☁️ Cloud Atmosphere</span>
+                                <span class="fly-temp status-on" id="clouds-mode-label">Active</span>
+                            </button>
+
+                            <div class="menu-section-header">Atmosphere & Oceans</div>
                             <button class="fly-to-item" id="btn-toggle-arcs" type="button">
                                 <span>💨 Jet Streams</span>
-                                <span class="fly-temp" id="arcs-mode-label">Active</span>
+                                <span class="fly-temp status-on" id="arcs-mode-label">Active</span>
                             </button>
+                            <button class="fly-to-item" id="btn-toggle-currents" type="button">
+                                <span>🌊 Ocean Currents</span>
+                                <span class="fly-temp status-off" id="currents-mode-label">Off</span>
+                            </button>
+
+                            <div class="menu-section-header">Physical Geography</div>
+                            <button class="fly-to-item" id="btn-toggle-grid" type="button">
+                                <span>🌐 Geographic Grid</span>
+                                <span class="fly-temp status-off" id="grid-mode-label">Off</span>
+                            </button>
+                            <button class="fly-to-item" id="btn-toggle-zones" type="button">
+                                <span>🌍 Climate Belts</span>
+                                <span class="fly-temp status-off" id="zones-mode-label">Off</span>
+                            </button>
+                            <button class="fly-to-item" id="btn-toggle-tectonics" type="button">
+                                <span>🌋 Tectonic Faults</span>
+                                <span class="fly-temp status-off" id="tectonics-mode-label">Off</span>
+                            </button>
+
+                            <div class="menu-section-header">Controls</div>
                             <button class="fly-to-item" id="btn-toggle-spin" type="button">
                                 <span>🔄 Auto-Spin</span>
-                                <span class="fly-temp" id="spin-mode-label">On</span>
+                                <span class="fly-temp status-on" id="spin-mode-label">On</span>
                             </button>
                             <button class="fly-to-item" id="btn-reset-view" type="button">
                                 <span>🎯 Reset Camera</span>
@@ -146,20 +173,58 @@
                     </div>
                 </div>
 
+                <!-- Geography & Climate Profile (For Geography Students) -->
+                <div class="geo-profile-card">
+                    <div class="geo-profile-header">
+                        <span>🎓 Geographic Profile</span>
+                    </div>
+                    <div class="geo-badge-row">
+                        <span class="geo-tag" id="card-geo-zone">North Temperate Zone</span>
+                        <span class="geo-tag coords" id="card-geo-coords">35.68° N, 139.65° E</span>
+                    </div>
+                    <div class="geo-detail-grid">
+                        <div class="geo-stat-item">
+                            <span>Elevation</span>
+                            <strong id="card-geo-elevation">40 m ASL</strong>
+                        </div>
+                        <div class="geo-stat-item">
+                            <span>Köppen Class</span>
+                            <strong id="card-geo-koppen">Cfa — Subtropical</strong>
+                        </div>
+                    </div>
+                    <div class="geo-fact-box" id="card-geo-note">
+                        Located along the Pacific Ring of Fire at the intersection of 3 tectonic plates.
+                    </div>
+                </div>
+
                 <a href="#" id="card-open-dashboard" class="globe-action-btn">Open Full Forecast in Dashboard →</a>
             </div>
 
-            <!-- Temperature Heatmap Legend -->
-            <div class="globe-legend" id="globe-legend" style="margin-left: auto;">
-                <div class="globe-legend-title">
-                    <span>Global Temperature</span>
-                    <span id="legend-unit">°C</span>
+            <!-- Right Bottom: Heatmap Legend & Active Geography Layers Guide -->
+            <div class="bottom-right-stack" style="margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 12px;">
+                
+                <!-- Dynamic Educational Layer Guide (Visible when layers are active) -->
+                <div class="geo-layer-guide hidden" id="geo-layer-guide">
+                    <div class="geo-guide-title">
+                        <span>🧭 Active Geography Reference</span>
+                    </div>
+                    <div class="geo-guide-items" id="geo-guide-items">
+                        <!-- Populated dynamically based on active toggles -->
+                    </div>
                 </div>
-                <div class="globe-legend-bar"></div>
-                <div class="globe-legend-labels">
-                    <span id="legend-min">< 0°</span>
-                    <span id="legend-mid">18°</span>
-                    <span id="legend-max">> 35°</span>
+
+                <!-- Temperature Heatmap Legend -->
+                <div class="globe-legend" id="globe-legend">
+                    <div class="globe-legend-title">
+                        <span>Global Temperature</span>
+                        <span id="legend-unit">°C</span>
+                    </div>
+                    <div class="globe-legend-bar"></div>
+                    <div class="globe-legend-labels">
+                        <span id="legend-min">< 0°</span>
+                        <span id="legend-mid">18°</span>
+                        <span id="legend-max">> 35°</span>
+                    </div>
                 </div>
             </div>
 
