@@ -25,14 +25,23 @@
     <div class="globe-ui-layer">
         <!-- Top Nav -->
         <header class="top-nav">
-            <a href="index.html" class="logo">Stratos<span>Weather</span></a>
+            <!-- Left Side: Logo & Fly-To Scroll-Down Button -->
+            <div style="display: flex; align-items: center; gap: 1.2rem;">
+                <a href="index.html" class="logo">Stratos<span>Weather</span></a>
 
-            <nav class="nav-links">
-                <a href="index.html" class="nav-link">🌤️ Dashboard</a>
-                <a href="globe.html" class="nav-link active">🌐 3D Earth</a>
-                <a href="analytics.html" class="nav-link">📊 Analytics</a>
-            </nav>
+                <!-- Fly To Dropdown Button -->
+                <div class="fly-to-dropdown-container">
+                    <button class="glass-dropdown-btn" id="btn-fly-to-dropdown" type="button">
+                        <span>⚡ Fly To City</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="glass-dropdown-menu" id="fly-to-menu">
+                        <!-- Populated dynamically with global cities -->
+                    </div>
+                </div>
+            </div>
 
+            <!-- Center: Search Pill -->
             <div class="search-container">
                 <div class="search-pill">
                     <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -41,26 +50,20 @@
                 <div id="autocomplete-list" class="autocomplete-suggestions glass"></div>
             </div>
 
-            <div class="nav-controls">
-                <button class="unit-toggle glass-btn" id="unit-toggle" title="Switch between °C and °F">°C</button>
-                <div class="time-box" id="current-time">12:00 PM</div>
+            <!-- Right Corner: Navigation Buttons (Dashboard, 3D Earth, Analytics) + Unit Toggle -->
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <nav class="nav-links">
+                    <a href="index.html" class="nav-link">🌤️ Dashboard</a>
+                    <a href="globe.html" class="nav-link active">🌐 3D Earth</a>
+                    <a href="analytics.html" class="nav-link">📊 Analytics</a>
+                </nav>
+
+                <div class="nav-controls">
+                    <button class="unit-toggle glass-btn" id="unit-toggle" title="Switch between °C and °F">°C</button>
+                    <div class="time-box" id="current-time">12:00 PM</div>
+                </div>
             </div>
         </header>
-
-        <!-- Quick Hotspots Horizontal Bar -->
-        <div class="globe-hotspots-bar" id="hotspots-bar">
-            <span class="hotspots-label">⚡ Fly To:</span>
-            <button class="hotspot-chip" data-city="Tokyo">🇯🇵 Tokyo</button>
-            <button class="hotspot-chip" data-city="London">🇬🇧 London</button>
-            <button class="hotspot-chip" data-city="New York">🇺🇸 New York</button>
-            <button class="hotspot-chip" data-city="Mumbai">🇮🇳 Mumbai</button>
-            <button class="hotspot-chip" data-city="Dubai">🇦🇪 Dubai</button>
-            <button class="hotspot-chip" data-city="Paris">🇫🇷 Paris</button>
-            <button class="hotspot-chip" data-city="Sydney">🇦🇺 Sydney</button>
-            <button class="hotspot-chip" data-city="Cairo">🇪🇬 Cairo</button>
-            <button class="hotspot-chip" data-city="Reykjavik">🇮🇸 Reykjavik</button>
-            <button class="hotspot-chip" data-city="Honolulu">🌺 Honolulu</button>
-        </div>
 
         <!-- Bottom Controls & Floating Panels -->
         <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; position: relative;">

@@ -250,6 +250,9 @@ async function fetchGlobalHotspots() {
         myGlobe.htmlElementsData(cityMarkers);
     }
 
+    // Refresh Dropdown with live temperatures
+    renderFlyToMenu();
+
     // Hide loader
     const loader = document.getElementById('globe-loader');
     if (loader) {
@@ -317,6 +320,8 @@ function setupControls() {
             if (activeInspectedCity) {
                 inspectCity(activeInspectedCity);
             }
+
+            renderFlyToMenu();
 
             if (myGlobe) {
                 myGlobe.htmlElementsData([...cityMarkers]);
@@ -386,23 +391,57 @@ function setupControls() {
         });
     }
 
-    // Quick Hotspots Fly-To Bar
-    setupHotspotsBar();
+    // Left-Hand Side Fly-To Dropdown
+    setupFlyToDropdown();
 
     // Autocomplete Search & Fly-To
     setupGlobeSearch();
 }
 
-function setupHotspotsBar() {
-    const chips = document.querySelectorAll('.hotspot-chip');
-    chips.forEach(chip => {
-        chip.addEventListener('click', () => {
-            const cityName = chip.getAttribute('data-city');
-            const found = cityMarkers.find(c => c.name.toLowerCase() === cityName.toLowerCase());
-            if (found) {
-                inspectCity(found);
-            }
+function setupFlyToDropdown() {
+    const dropdownBtn = document.getElementById('btn-fly-to-dropdown');
+    const dropdownMenu = document.getElementById('fly-to-menu');
+    if (!dropdownBtn || !dropdownMenu) return;
+
+    renderFlyToMenu();
+
+    dropdownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = dropdownMenu.classList.toggle('show');
+        dropdownBtn.classList.toggle('active', isOpen);
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.classList.remove('show');
+            dropdownBtn.classList.remove('active');
+        }
+    });
+}
+
+function renderFlyToMenu() {
+    const dropdownMenu = document.getElementById('fly-to-menu');
+    if (!dropdownMenu) return;
+    dropdownMenu.innerHTML = '';
+
+    const listToRender = cityMarkers.length > 0 ? cityMarkers : GLOBAL_HUBS;
+
+    listToRender.forEach(city => {
+        const item = document.createElement('button');
+        item.className = 'fly-to-item';
+        item.type = 'button';
+        const tempText = city.temp !== undefined ? `${formatTemp(city.temp)}°` : '';
+        item.innerHTML = `
+            <span>${city.flag || '📍'} ${city.name}</span>
+            <span class="fly-temp" style="color: ${city.color || 'var(--accent)'}">${tempText} ${city.icon || ''}</span>
+        `;
+        item.addEventListener('click', () => {
+            inspectCity(city);
+            dropdownMenu.classList.remove('show');
+            const dropdownBtn = document.getElementById('btn-fly-to-dropdown');
+            if (dropdownBtn) dropdownBtn.classList.remove('active');
         });
+        dropdownMenu.appendChild(item);
     });
 }
 

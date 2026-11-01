@@ -1105,3 +1105,113 @@ body.globe-page {
 .marker-icon {
     font-size: 0.95rem;
 }
+
+
+/* --- Left Hand Side Fly-To Dropdown --- */
+.fly-to-dropdown-container {
+    position: relative;
+    display: inline-block;
+    pointer-events: auto;
+}
+
+.glass-dropdown-btn {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(25px);
+    color: var(--text-main);
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 8px 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.glass-dropdown-btn:hover, .glass-dropdown-btn.active {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 20px var(--accent-glow);
+    transform: translateY(-2px);
+}
+
+.glass-dropdown-btn .dropdown-arrow {
+    font-size: 0.65rem;
+    transition: transform 0.25s ease;
+}
+
+.glass-dropdown-btn.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.glass-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    width: 240px;
+    max-height: 340px;
+    overflow-y: auto;
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(40px);
+    border-radius: 20px;
+    padding: 8px;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 1000;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.glass-dropdown-menu.show {
+    display: flex;
+    animation: slideDownFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDownFade {
+    from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.glass-dropdown-menu::-webkit-scrollbar {
+    width: 5px;
+}
+.glass-dropdown-menu::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.fly-to-item {
+    padding: 9px 14px;
+    border-radius: 12px;
+    color: var(--text-main);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+    background: transparent;
+    border: none;
+    text-align: left;
+    width: 100%;
+}
+
+.fly-to-item:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--accent);
+    transform: translateX(4px);
+}
+
+.fly-to-item .fly-temp {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-dim);
+}
