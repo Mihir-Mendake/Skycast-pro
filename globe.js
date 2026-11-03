@@ -18,60 +18,316 @@ const TEXTURES = {
 };
 
 // ===================================================
-// 1. DATASETS FOR GEOGRAPHY STUDENTS
+// 1. DATASETS FOR GEOGRAPHY STUDENTS & CLIMATE SCIENTISTS
 // ===================================================
 
-// Global Jet Stream Corridors (High Troposphere: ~10-12 km altitude)
-const JET_STREAM_ARCS = [
-    { type: 'jet', startLat: 40.7128, startLng: -74.0060, endLat: 51.5074, endLng: -0.1278, color: ['#38bdf8', '#818cf8'] }, // NY -> London
-    { type: 'jet', startLat: 51.5074, startLng: -0.1278, endLat: 48.8566, endLng: 2.3522, color: ['#818cf8', '#a855f7'] },  // London -> Paris
-    { type: 'jet', startLat: 48.8566, startLng: 2.3522, endLat: 25.2048, endLng: 55.2708, color: ['#a855f7', '#fbbf24'] },  // Paris -> Dubai
-    { type: 'jet', startLat: 25.2048, startLng: 55.2708, endLat: 19.0760, endLng: 72.8777, color: ['#fbbf24', '#f87171'] },  // Dubai -> Mumbai
-    { type: 'jet', startLat: 19.0760, startLng: 72.8777, endLat: 1.3521, endLng: 103.8198, color: ['#f87171', '#34d399'] },  // Mumbai -> Singapore
-    { type: 'jet', startLat: 1.3521, startLng: 103.8198, endLat: 35.6762, endLng: 139.6503, color: ['#34d399', '#38bdf8'] },  // Singapore -> Tokyo
-    { type: 'jet', startLat: 35.6762, startLng: 139.6503, endLat: 21.3069, endLng: -157.8583, color: ['#38bdf8', '#60a5fa'] },// Tokyo -> Honolulu
-    { type: 'jet', startLat: 21.3069, startLng: -157.8583, endLat: 34.0522, endLng: -118.2437, color: ['#60a5fa', '#f59e0b'] },// Honolulu -> LA
-    { type: 'jet', startLat: 34.0522, startLng: -118.2437, endLat: 40.7128, endLng: -74.0060, color: ['#f59e0b', '#38bdf8'] }, // LA -> NY
-    { type: 'jet', startLat: -33.8688, startLng: 151.2093, endLat: 1.3521, endLng: 103.8198, color: ['#38bdf8', '#34d399'] }, // Sydney -> Singapore
-    { type: 'jet', startLat: 64.1466, startLng: -21.9426, endLat: 51.5074, endLng: -0.1278, color: ['#93c5fd', '#38bdf8'] },  // Reykjavik -> London
-    { type: 'jet', startLat: -22.9068, startLng: -43.1729, endLat: -33.9249, endLng: 18.4241, color: ['#fbbf24', '#f43f5e'] }, // Rio -> Cape Town
-    { type: 'jet', startLat: -33.9249, startLng: 18.4241, endLat: 30.0444, endLng: 31.2357, color: ['#f43f5e', '#fbbf24'] },  // Cape Town -> Cairo
-    { type: 'jet', startLat: 30.0444, startLng: 31.2357, endLat: 25.2048, endLng: 55.2708, color: ['#fbbf24', '#f59e0b'] }   // Cairo -> Dubai
-];
-
-// Major Ocean Currents (Thermohaline Conveyor Belt: Sea-level flow)
-// Warm Currents: Crimson/Gold | Cold Currents: Deep Cyan/Ice-Blue
-const OCEAN_CURRENTS = [
-    // WARM CURRENTS
-    { type: 'ocean', name: 'Gulf Stream', startLat: 24.0, startLng: -80.0, endLat: 42.0, endLng: -45.0, color: ['#ef4444', '#f59e0b'] },
-    { type: 'ocean', name: 'North Atlantic Drift', startLat: 42.0, startLng: -45.0, endLat: 62.0, endLng: -10.0, color: ['#f59e0b', '#fbbf24'] },
-    { type: 'ocean', name: 'Kuroshio Current', startLat: 18.0, startLng: 124.0, endLat: 38.0, endLng: 144.0, color: ['#ef4444', '#f59e0b'] },
-    { type: 'ocean', name: 'North Pacific Current', startLat: 38.0, startLng: 144.0, endLat: 44.0, endLng: -140.0, color: ['#f59e0b', '#fbbf24'] },
-    { type: 'ocean', name: 'Brazil Current', startLat: -10.0, startLng: -35.0, endLat: -38.0, endLng: -52.0, color: ['#ef4444', '#f59e0b'] },
-    { type: 'ocean', name: 'Agulhas Current', startLat: -18.0, startLng: 38.0, endLat: -36.0, endLng: 20.0, color: ['#ef4444', '#f59e0b'] },
-    { type: 'ocean', name: 'East Australian Current', startLat: -18.0, startLng: 154.0, endLat: -42.0, endLng: 152.0, color: ['#ef4444', '#f59e0b'] },
-    { type: 'ocean', name: 'South Equatorial Current', startLat: -6.0, startLng: -90.0, endLat: -3.0, endLng: 160.0, color: ['#ef4444', '#fbbf24'] },
-
-    // COLD CURRENTS
-    { type: 'ocean', name: 'California Current', startLat: 48.0, startLng: -128.0, endLat: 24.0, endLng: -115.0, color: ['#06b6d4', '#38bdf8'] },
-    { type: 'ocean', name: 'Humboldt (Peru) Current', startLat: -46.0, startLng: -78.0, endLat: -12.0, endLng: -82.0, color: ['#0284c7', '#38bdf8'] },
-    { type: 'ocean', name: 'Benguela Current', startLat: -34.0, startLng: 16.0, endLat: -12.0, endLng: 10.0, color: ['#0284c7', '#38bdf8'] },
-    { type: 'ocean', name: 'Canaries Current', startLat: 36.0, startLng: -12.0, endLat: 16.0, endLng: -22.0, color: ['#06b6d4', '#38bdf8'] },
-    { type: 'ocean', name: 'Labrador Current', startLat: 64.0, startLng: -58.0, endLat: 44.0, endLng: -52.0, color: ['#93c5fd', '#38bdf8'] },
-    { type: 'ocean', name: 'Oyashio Current', startLat: 54.0, startLng: 160.0, endLat: 40.0, endLng: 144.0, color: ['#93c5fd', '#38bdf8'] },
-    { type: 'ocean', name: 'West Australian Current', startLat: -34.0, startLng: 114.0, endLat: -18.0, endLng: 110.0, color: ['#0284c7', '#38bdf8'] },
-    { type: 'ocean', name: 'Antarctic Circumpolar (W to E)', startLat: -55.0, startLng: -60.0, endLat: -55.0, endLng: 40.0, color: ['#38bdf8', '#818cf8'] },
-    { type: 'ocean', name: 'Antarctic Circumpolar (Indian/Pac)', startLat: -55.0, startLng: 40.0, endLat: -55.0, endLng: 140.0, color: ['#818cf8', '#38bdf8'] }
-];
-
 // Helper to generate circular latitude paths
-function generateLatitudeLine(lat, step = 3) {
+function generateLatitudeLine(lat, step = 2) {
     const pts = [];
     for (let lng = -180; lng <= 180; lng += step) {
         pts.push([lat, lng]);
     }
     return pts;
 }
+
+// Mathematical generator for planetary Rossby wave jet streams (Atmospheric Troposphere ~10km)
+function generateRossbyWave(baseLat, waveCount, amplitude, phaseShift = 0, step = 2) {
+    const pts = [];
+    for (let lng = -180; lng <= 180; lng += step) {
+        const rad = (lng + phaseShift) * (Math.PI / 180);
+        // Harmonic superposition creates organic atmospheric meanders across ridges and troughs
+        const wave = Math.sin(rad * waveCount) * amplitude + Math.cos(rad * 2) * (amplitude * 0.3);
+        const lat = Math.max(-85, Math.min(85, baseLat + wave));
+        pts.push([lat, lng]);
+    }
+    return pts;
+}
+
+// Professional Jet Stream Systems (Meandering Rossby Ribbon Waves in Upper Troposphere)
+const PROFESSIONAL_JET_STREAMS = [
+    // 1. Northern Polar Front Jet (Primary Core Stream) - 52°N base, wavenumber 4 Rossby meander
+    {
+        name: 'Northern Polar Front Jet (Core)',
+        coords: generateRossbyWave(52, 4, 10.5, 20),
+        color: 'rgba(56, 189, 248, 0.95)', // Radiant aerodynamic cyan
+        stroke: 2.0,
+        alt: 0.040,
+        dashLength: 0.16,
+        dashGap: 0.04,
+        animateTime: 3400
+    },
+    // 2. Northern Polar Jet (Secondary High-Latitude Flank)
+    {
+        name: 'Northern Polar Jet (Secondary Branch)',
+        coords: generateRossbyWave(58, 4, 8.0, 35),
+        color: 'rgba(96, 165, 250, 0.65)', // Muted atmospheric blue
+        stroke: 1.3,
+        alt: 0.037,
+        dashLength: 0.14,
+        dashGap: 0.05,
+        animateTime: 4000
+    },
+    // 3. Northern Subtropical Jet Stream - ~30°N, high-velocity linear ribbon
+    {
+        name: 'Northern Subtropical Jet',
+        coords: generateRossbyWave(30, 3, 5.0, 45),
+        color: 'rgba(129, 140, 248, 0.9)', // Violet-blue
+        stroke: 1.8,
+        alt: 0.042,
+        dashLength: 0.20,
+        dashGap: 0.04,
+        animateTime: 2800
+    },
+    // 4. Southern Polar Jet (Circumpolar Roaring Forties/Fifties) - ~53°S
+    {
+        name: 'Southern Polar Jet (Roaring Forties)',
+        coords: generateRossbyWave(-53, 4, 7.5, 15),
+        color: 'rgba(56, 189, 248, 0.9)',
+        stroke: 2.0,
+        alt: 0.040,
+        dashLength: 0.18,
+        dashGap: 0.04,
+        animateTime: 3200
+    },
+    // 5. Southern Subtropical Jet - ~28°S
+    {
+        name: 'Southern Subtropical Jet',
+        coords: generateRossbyWave(-28, 3, 4.5, 30),
+        color: 'rgba(129, 140, 248, 0.8)',
+        stroke: 1.6,
+        alt: 0.039,
+        dashLength: 0.18,
+        dashGap: 0.05,
+        animateTime: 3600
+    }
+];
+
+// Professional Global Ocean Currents (Thermohaline Gyres & Coastal Boundary Currents at Sea Level)
+const PROFESSIONAL_OCEAN_CURRENTS = [
+    // WARM CURRENTS (Thermal Gyres & Western Boundary Currents)
+    {
+        name: 'Gulf Stream & North Atlantic Drift',
+        type: 'warm',
+        coords: [
+            [24.5, -81.0], [26.0, -80.0], [29.0, -80.2], [32.0, -78.8], [35.2, -75.2],
+            [37.5, -71.5], [39.8, -65.0], [41.2, -56.0], [42.8, -46.0], [48.0, -35.0],
+            [53.0, -25.0], [58.5, -14.0], [62.5, -4.0], [67.0, 7.0], [71.5, 20.0]
+        ],
+        color: '#f43f5e',
+        stroke: 2.2,
+        alt: 0.006,
+        dashLength: 0.16,
+        dashGap: 0.03,
+        animateTime: 4400
+    },
+    {
+        name: 'Kuroshio Current & North Pacific Gyre',
+        type: 'warm',
+        coords: [
+            [14.5, 126.0], [19.0, 123.5], [23.5, 122.5], [27.5, 126.5], [31.5, 131.0],
+            [34.2, 137.5], [35.8, 142.0], [38.5, 148.0], [41.0, 158.0], [43.0, 170.0],
+            [44.5, -175.0], [45.5, -160.0], [46.5, -145.0], [48.0, -135.0]
+        ],
+        color: '#f43f5e',
+        stroke: 2.0,
+        alt: 0.006,
+        dashLength: 0.16,
+        dashGap: 0.03,
+        animateTime: 4400
+    },
+    {
+        name: 'Brazil Current',
+        type: 'warm',
+        coords: [
+            [-8.5, -34.8], [-12.5, -38.2], [-17.5, -39.0], [-22.5, -41.5],
+            [-27.5, -46.5], [-33.0, -51.5], [-38.5, -55.0]
+        ],
+        color: '#f43f5e',
+        stroke: 1.8,
+        alt: 0.006,
+        dashLength: 0.14,
+        dashGap: 0.04,
+        animateTime: 4800
+    },
+    {
+        name: 'Agulhas Current (Western Indian Ocean)',
+        type: 'warm',
+        coords: [
+            [-14.5, 41.5], [-19.5, 36.5], [-25.5, 33.5], [-30.5, 30.5],
+            [-34.0, 26.5], [-36.8, 21.0], [-38.2, 16.5]
+        ],
+        color: '#fb923c',
+        stroke: 1.9,
+        alt: 0.006,
+        dashLength: 0.15,
+        dashGap: 0.04,
+        animateTime: 4200
+    },
+    {
+        name: 'East Australian Current (EAC)',
+        type: 'warm',
+        coords: [
+            [-15.5, 148.0], [-19.5, 151.0], [-24.5, 154.5], [-29.5, 154.0],
+            [-34.0, 152.5], [-38.5, 151.0], [-42.5, 149.0]
+        ],
+        color: '#fb923c',
+        stroke: 1.8,
+        alt: 0.006,
+        dashLength: 0.15,
+        dashGap: 0.04,
+        animateTime: 4600
+    },
+    {
+        name: 'North Equatorial Current (Atlantic)',
+        type: 'warm',
+        coords: [
+            [13.5, -20.0], [14.5, -32.0], [15.2, -45.0], [15.8, -58.0], [16.5, -68.0]
+        ],
+        color: '#fbbf24',
+        stroke: 1.6,
+        alt: 0.006,
+        dashLength: 0.16,
+        dashGap: 0.04,
+        animateTime: 5000
+    },
+    {
+        name: 'North Equatorial Current (Pacific)',
+        type: 'warm',
+        coords: [
+            [12.0, -110.0], [12.5, -130.0], [13.0, -155.0], [13.5, 175.0],
+            [14.0, 155.0], [14.5, 135.0]
+        ],
+        color: '#fbbf24',
+        stroke: 1.6,
+        alt: 0.006,
+        dashLength: 0.18,
+        dashGap: 0.04,
+        animateTime: 5200
+    },
+    {
+        name: 'South Equatorial Current (Pacific)',
+        type: 'warm',
+        coords: [
+            [-4.5, -85.0], [-4.0, -110.0], [-3.5, -140.0], [-3.0, -170.0],
+            [-2.8, 160.0], [-2.5, 140.0]
+        ],
+        color: '#fbbf24',
+        stroke: 1.6,
+        alt: 0.006,
+        dashLength: 0.18,
+        dashGap: 0.04,
+        animateTime: 5200
+    },
+
+    // COLD CURRENTS (Eastern Boundary Upwelling & Subpolar Drift)
+    {
+        name: 'California Current',
+        type: 'cold',
+        coords: [
+            [50.0, -128.5], [46.0, -126.5], [41.0, -125.8], [36.0, -123.5],
+            [32.0, -120.0], [27.0, -116.0], [22.5, -111.0]
+        ],
+        color: '#06b6d4',
+        stroke: 1.9,
+        alt: 0.006,
+        dashLength: 0.15,
+        dashGap: 0.03,
+        animateTime: 4600
+    },
+    {
+        name: 'Humboldt (Peru) Current',
+        type: 'cold',
+        coords: [
+            [-48.0, -76.0], [-42.0, -75.0], [-36.0, -73.5], [-30.0, -72.0],
+            [-23.5, -71.0], [-17.5, -73.0], [-12.0, -78.0], [-6.5, -82.0], [-2.0, -86.5]
+        ],
+        color: '#0284c7',
+        stroke: 2.0,
+        alt: 0.006,
+        dashLength: 0.15,
+        dashGap: 0.03,
+        animateTime: 4400
+    },
+    {
+        name: 'Benguela Current (South Atlantic Upwelling)',
+        type: 'cold',
+        coords: [
+            [-35.5, 18.5], [-31.5, 16.8], [-27.0, 14.2], [-22.0, 12.5],
+            [-17.0, 10.5], [-11.5, 9.0]
+        ],
+        color: '#0284c7',
+        stroke: 1.9,
+        alt: 0.006,
+        dashLength: 0.15,
+        dashGap: 0.03,
+        animateTime: 4600
+    },
+    {
+        name: 'Canary Current',
+        type: 'cold',
+        coords: [
+            [42.0, -10.0], [37.0, -10.5], [32.0, -12.5], [26.5, -16.2],
+            [21.0, -19.5], [15.0, -22.5]
+        ],
+        color: '#06b6d4',
+        stroke: 1.8,
+        alt: 0.006,
+        dashLength: 0.15,
+        dashGap: 0.03,
+        animateTime: 4800
+    },
+    {
+        name: 'Labrador Current',
+        type: 'cold',
+        coords: [
+            [66.0, -60.0], [60.5, -61.2], [55.0, -57.5], [50.0, -53.8],
+            [45.0, -50.2], [41.5, -49.0]
+        ],
+        color: '#38bdf8',
+        stroke: 1.9,
+        alt: 0.006,
+        dashLength: 0.14,
+        dashGap: 0.03,
+        animateTime: 4200
+    },
+    {
+        name: 'Oyashio (Kamchatka) Current',
+        type: 'cold',
+        coords: [
+            [58.0, 164.0], [52.5, 158.5], [47.5, 152.5], [43.0, 147.2], [39.5, 143.0]
+        ],
+        color: '#38bdf8',
+        stroke: 1.8,
+        alt: 0.006,
+        dashLength: 0.14,
+        dashGap: 0.03,
+        animateTime: 4200
+    },
+    {
+        name: 'West Australian Current',
+        type: 'cold',
+        coords: [
+            [-37.5, 114.5], [-32.5, 113.0], [-27.0, 111.5], [-21.0, 109.0], [-15.0, 106.0]
+        ],
+        color: '#06b6d4',
+        stroke: 1.8,
+        alt: 0.006,
+        dashLength: 0.15,
+        dashGap: 0.03,
+        animateTime: 4800
+    },
+    {
+        name: 'Antarctic Circumpolar Current (ACC - West Wind Drift)',
+        type: 'cold',
+        coords: generateLatitudeLine(-54, 2),
+        color: '#38bdf8',
+        stroke: 2.2,
+        alt: 0.007,
+        dashLength: 0.18,
+        dashGap: 0.04,
+        animateTime: 5400
+    }
+];
 
 // Helper to generate meridian longitude paths
 function generateLongitudeLine(lng, minLat = -85, maxLat = 85, step = 3) {
@@ -432,27 +688,15 @@ function mapWeatherCode(code, isDay = true) {
     return { condition: "Clear", icon: "🌤️" };
 }
 
-// Compute active combined arcs (Jet Streams + Ocean Currents)
-function getActiveArcs() {
-    let arcs = [];
-    if (areArcsEnabled) arcs = arcs.concat(JET_STREAM_ARCS);
-    if (areCurrentsEnabled) arcs = arcs.concat(OCEAN_CURRENTS);
-    return arcs;
-}
-
-// Compute active combined paths (Grid + Climate Zones + Tectonics)
+// Compute active combined paths (Grid + Climate Zones + Tectonics + Jet Streams + Ocean Currents)
 function getActivePaths() {
     let paths = [];
     if (isGridEnabled) paths = paths.concat(GEOGRAPHIC_GRID_PATHS);
     if (areZonesEnabled) paths = paths.concat(CLIMATE_ZONE_PATHS);
     if (areTectonicsEnabled) paths = paths.concat(TECTONIC_PATHS);
+    if (areArcsEnabled) paths = paths.concat(PROFESSIONAL_JET_STREAMS);
+    if (areCurrentsEnabled) paths = paths.concat(PROFESSIONAL_OCEAN_CURRENTS);
     return paths;
-}
-
-// Refresh 3D Arcs on globe
-function updateGlobeArcs() {
-    if (!myGlobe) return;
-    myGlobe.arcsData(getActiveArcs());
 }
 
 // Refresh 3D Paths on globe
@@ -495,30 +739,17 @@ function initGlobe() {
             return el;
         })
 
-        // Luminous Arcs (Tropospheric Jet Streams & Sea-Level Ocean Currents)
-        .arcsData(getActiveArcs())
-        .arcStartLat(d => d.startLat)
-        .arcStartLng(d => d.startLng)
-        .arcEndLat(d => d.endLat)
-        .arcEndLng(d => d.endLng)
-        .arcColor(d => d.color)
-        .arcAltitude(d => d.type === 'ocean' ? 0.035 : 0.25)
-        .arcStroke(d => d.type === 'ocean' ? 1.35 : 0.85)
-        .arcDashLength(d => d.type === 'ocean' ? 0.35 : 0.45)
-        .arcDashGap(d => d.type === 'ocean' ? 0.8 : 1.2)
-        .arcDashAnimateTime(d => d.type === 'ocean' ? 2800 : 2200)
-
-        // Physical Geography Paths (Grid, Climate Zones, Tectonic Faults)
+        // Professional Physical Geography & Atmospheric Streamline Paths
         .pathsData(getActivePaths())
         .pathPoints(d => d.coords)
         .pathPointLat(p => p[0])
         .pathPointLng(p => p[1])
-        .pathPointAlt(d => d.alt || 0.008)
+        .pathPointAlt(d => d.alt !== undefined ? d.alt : 0.008)
         .pathColor(d => d.color)
-        .pathStroke(d => d.stroke || 1.2)
-        .pathDashLength(d => d.dashLength || 1)
-        .pathDashGap(d => d.dashGap || 0)
-        .pathDashAnimateTime(d => d.animateTime || 0);
+        .pathStroke(d => d.stroke !== undefined ? d.stroke : 1.4)
+        .pathDashLength(d => d.dashLength !== undefined ? d.dashLength : 1)
+        .pathDashGap(d => d.dashGap !== undefined ? d.dashGap : 0)
+        .pathDashAnimateTime(d => d.animateTime !== undefined ? d.animateTime : 0);
 
     // Initial View Position
     myGlobe.pointOfView({ lat: 20, lng: 35, altitude: 2.1 });
@@ -779,26 +1010,26 @@ function setupControls() {
         });
     }
 
-    // 3. Jet Streams (Troposphere Arcs)
+    // 3. Jet Streams (Atmospheric Rossby Wind Vectors)
     const arcsBtn = document.getElementById('btn-toggle-arcs');
     const arcsLabel = document.getElementById('arcs-mode-label');
     if (arcsBtn) {
         arcsBtn.addEventListener('click', () => {
             areArcsEnabled = !areArcsEnabled;
             setButtonStatus(arcsLabel, areArcsEnabled);
-            updateGlobeArcs();
+            updateGlobePaths();
             updateLayerGuide();
         });
     }
 
-    // 4. Ocean Currents (Thermohaline Arcs)
+    // 4. Ocean Currents (Marine Thermohaline Gyres)
     const currentsBtn = document.getElementById('btn-toggle-currents');
     const currentsLabel = document.getElementById('currents-mode-label');
     if (currentsBtn) {
         currentsBtn.addEventListener('click', () => {
             areCurrentsEnabled = !areCurrentsEnabled;
             setButtonStatus(currentsLabel, areCurrentsEnabled);
-            updateGlobeArcs();
+            updateGlobePaths();
             updateLayerGuide();
         });
     }
@@ -899,7 +1130,11 @@ function updateLayerGuide() {
         activeRows.push(`
             <div class="geo-guide-row">
                 <span class="geo-guide-color-dot" style="background: #38bdf8;"></span>
-                <span>Jet Streams (Troposphere ~10km)</span>
+                <span>Polar Jet Streams (Rossby Waves ~10km)</span>
+            </div>
+            <div class="geo-guide-row">
+                <span class="geo-guide-color-dot" style="background: #818cf8;"></span>
+                <span>Subtropical Jet Streams (~12km)</span>
             </div>
         `);
     }
@@ -907,12 +1142,12 @@ function updateLayerGuide() {
     if (areCurrentsEnabled) {
         activeRows.push(`
             <div class="geo-guide-row">
-                <span class="geo-guide-color-dot" style="background: #ef4444;"></span>
-                <span>Warm Ocean Currents (Gulf / Kuroshio)</span>
+                <span class="geo-guide-color-dot" style="background: #f43f5e;"></span>
+                <span>Warm Boundary Currents (Gulf / Kuroshio)</span>
             </div>
             <div class="geo-guide-row">
-                <span class="geo-guide-color-dot" style="background: #06b6d4;"></span>
-                <span>Cold Currents (California / Humboldt)</span>
+                <span class="geo-guide-color-dot" style="background: #0284c7;"></span>
+                <span>Cold Upwelling & ACC (Humboldt / Benguela)</span>
             </div>
         `);
     }
