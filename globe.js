@@ -21,11 +21,25 @@ const TEXTURES = {
 // 1. DATASETS FOR GEOGRAPHY STUDENTS & CLIMATE SCIENTISTS
 // ===================================================
 
-// Helper to generate circular latitude paths
+// Helper to generate seamless 360° closed latitude rings
 function generateLatitudeLine(lat, step = 2) {
     const pts = [];
     for (let lng = -180; lng <= 180; lng += step) {
         pts.push([lat, lng]);
+    }
+    pts.push([lat, 180]);
+    pts.push([lat, -180]); // Full seamless loop closure
+    return pts;
+}
+
+// Helper to generate pole-to-pole converging meridian lines (-90° South Pole to +90° North Pole)
+function generateLongitudeLine(lng, step = 2) {
+    const pts = [];
+    for (let lat = -90; lat <= 90; lat += step) {
+        pts.push([lat, lng]);
+    }
+    if (pts[pts.length - 1][0] !== 90) {
+        pts.push([90, lng]);
     }
     return pts;
 }
@@ -102,280 +116,259 @@ const PROFESSIONAL_JET_STREAMS = [
     }
 ];
 
-// Professional Global Ocean Currents (Thermohaline Gyres & Coastal Boundary Currents at Sea Level)
+// Professional Global Ocean Belts (Fully Connected Oceanic Conveyor Loop & Closed Subtropical Gyres)
 const PROFESSIONAL_OCEAN_CURRENTS = [
-    // WARM CURRENTS (Thermal Gyres & Western Boundary Currents)
+    // 1. THE GREAT GLOBAL OCEAN CONVEYOR BELT (Continuous Planetary Thermohaline Loop)
     {
-        name: 'Gulf Stream & North Atlantic Drift',
-        type: 'warm',
+        name: 'Great Global Ocean Conveyor Belt',
+        type: 'conveyor',
         coords: [
-            [24.5, -81.0], [26.0, -80.0], [29.0, -80.2], [32.0, -78.8], [35.2, -75.2],
-            [37.5, -71.5], [39.8, -65.0], [41.2, -56.0], [42.8, -46.0], [48.0, -35.0],
-            [53.0, -25.0], [58.5, -14.0], [62.5, -4.0], [67.0, 7.0], [71.5, 20.0]
+            [68.0, -18.0],   // North Atlantic Deep Water Formation (Greenland / Iceland Sink)
+            [55.0, -28.0],
+            [40.0, -35.0],   // Deep North Atlantic Western Boundary Flow
+            [20.0, -42.0],
+            [0.0, -32.0],    // Equator cross
+            [-22.0, -28.0],  // South Atlantic
+            [-45.0, -35.0],
+            [-54.0, -10.0],  // Southern Ocean entry
+            [-55.0, 30.0],
+            [-55.0, 75.0],   // Indian Ocean branch entry
+            [-35.0, 80.0],
+            [-15.0, 82.0],   // Upwelling in Northern Indian Ocean
+            [5.0, 75.0],
+            [12.0, 65.0],    // Arabian Sea thermal warming
+            [5.0, 78.0],
+            [-4.0, 95.0],
+            [-8.0, 115.0],   // Indonesian Throughflow (Lombok / Sunda)
+            [8.0, 130.0],    // Pacific branch entry
+            [25.0, 150.0],
+            [42.0, 175.0],   // North Pacific upwelling & surface warming
+            [45.0, -165.0],
+            [30.0, -145.0],  // Warm surface return flow
+            [12.0, -140.0],
+            [-5.0, -165.0],
+            [-10.0, 160.0],
+            [-12.0, 125.0],  // Warm return across Indian Ocean
+            [-14.0, 85.0],
+            [-18.0, 50.0],
+            [-28.0, 35.0],
+            [-36.0, 20.0],   // Agulhas Current retroflection around Cape of Good Hope
+            [-32.0, 8.0],    // Northward surface return in South Atlantic
+            [-18.0, -10.0],
+            [-4.0, -22.0],
+            [12.0, -45.0],   // Crosses Equator into North Atlantic
+            [22.0, -65.0],   // Caribbean / Antilles surface warm drift
+            [35.0, -74.0],   // Gulf Stream northward surge
+            [45.0, -48.0],
+            [56.0, -30.0],   // North Atlantic Drift heading back to sink
+            [68.0, -18.0]    // Exact match with point 0! Continuous closed loop!
         ],
-        color: '#f43f5e',
-        stroke: 2.2,
-        alt: 0.006,
-        dashLength: 0.16,
+        color: '#fbbf24',    // Radiant golden planetary conveyor
+        stroke: 2.4,
+        alt: 0.007,
+        dashLength: 0.22,
         dashGap: 0.03,
-        animateTime: 4400
+        animateTime: 6500
     },
+
+    // 2. NORTH ATLANTIC SUBTROPICAL GYRE (Closed Continuous Circuit)
     {
-        name: 'Kuroshio Current & North Pacific Gyre',
-        type: 'warm',
+        name: 'North Atlantic Subtropical Gyre',
+        type: 'gyre',
         coords: [
-            [14.5, 126.0], [19.0, 123.5], [23.5, 122.5], [27.5, 126.5], [31.5, 131.0],
-            [34.2, 137.5], [35.8, 142.0], [38.5, 148.0], [41.0, 158.0], [43.0, 170.0],
-            [44.5, -175.0], [45.5, -160.0], [46.5, -145.0], [48.0, -135.0]
+            [24.5, -80.5],   // Florida Straits
+            [29.5, -80.0],   // Gulf Stream
+            [35.0, -75.0],
+            [39.5, -67.0],
+            [42.0, -52.0],   // North Atlantic Drift
+            [45.0, -38.0],
+            [44.0, -22.0],
+            [38.0, -13.0],   // Canary Current (Cold southward flow)
+            [28.0, -16.0],
+            [18.0, -22.0],
+            [14.0, -38.0],   // North Equatorial Current (Warm westward flow)
+            [14.5, -58.0],
+            [16.0, -72.0],   // Caribbean Current
+            [21.0, -84.0],
+            [24.5, -80.5]    // Seamless closure back to start!
+        ],
+        color: '#f43f5e',    // Thermal crimson
+        stroke: 2.0,
+        alt: 0.006,
+        dashLength: 0.18,
+        dashGap: 0.03,
+        animateTime: 4600
+    },
+
+    // 3. SOUTH ATLANTIC SUBTROPICAL GYRE (Closed Continuous Circuit)
+    {
+        name: 'South Atlantic Subtropical Gyre',
+        type: 'gyre',
+        coords: [
+            [-10.0, -35.0],  // Brazil Current start
+            [-18.0, -39.0],
+            [-27.0, -46.0],
+            [-36.0, -52.0],
+            [-41.0, -40.0],  // South Atlantic Current (Eastward)
+            [-41.0, -18.0],
+            [-39.0, 5.0],
+            [-34.0, 17.0],   // Benguela Current (Northward upwelling)
+            [-25.0, 13.0],
+            [-15.0, 9.0],
+            [-8.0, -2.0],    // South Equatorial Current (Westward)
+            [-6.0, -20.0],
+            [-8.0, -33.0],
+            [-10.0, -35.0]   // Seamless closure back to start!
+        ],
+        color: '#0284c7',    // Deep ocean blue
+        stroke: 2.0,
+        alt: 0.006,
+        dashLength: 0.18,
+        dashGap: 0.03,
+        animateTime: 4800
+    },
+
+    // 4. NORTH PACIFIC SUBTROPICAL GYRE (Closed Continuous Circuit)
+    {
+        name: 'North Pacific Subtropical Gyre',
+        type: 'gyre',
+        coords: [
+            [16.0, 124.0],   // Kuroshio Current start
+            [24.0, 123.0],
+            [31.0, 130.0],
+            [35.5, 141.0],
+            [39.0, 152.0],   // North Pacific Current (Eastward)
+            [42.0, 170.0],
+            [44.0, -175.0],
+            [44.5, -150.0],
+            [42.0, -135.0],
+            [36.0, -125.0],  // California Current (Southward)
+            [26.0, -118.0],
+            [18.0, -114.0],
+            [14.0, -130.0],  // North Equatorial Current (Westward)
+            [13.5, -165.0],
+            [14.0, 165.0],
+            [15.0, 140.0],
+            [16.0, 124.0]    // Seamless closure back to start!
         ],
         color: '#f43f5e',
         stroke: 2.0,
         alt: 0.006,
-        dashLength: 0.16,
+        dashLength: 0.18,
         dashGap: 0.03,
-        animateTime: 4400
-    },
-    {
-        name: 'Brazil Current',
-        type: 'warm',
-        coords: [
-            [-8.5, -34.8], [-12.5, -38.2], [-17.5, -39.0], [-22.5, -41.5],
-            [-27.5, -46.5], [-33.0, -51.5], [-38.5, -55.0]
-        ],
-        color: '#f43f5e',
-        stroke: 1.8,
-        alt: 0.006,
-        dashLength: 0.14,
-        dashGap: 0.04,
         animateTime: 4800
     },
+
+    // 5. SOUTH PACIFIC SUBTROPICAL GYRE (Closed Continuous Circuit)
     {
-        name: 'Agulhas Current (Western Indian Ocean)',
-        type: 'warm',
+        name: 'South Pacific Subtropical Gyre',
+        type: 'gyre',
         coords: [
-            [-14.5, 41.5], [-19.5, 36.5], [-25.5, 33.5], [-30.5, 30.5],
-            [-34.0, 26.5], [-36.8, 21.0], [-38.2, 16.5]
+            [-18.0, 152.0],  // East Australian Current start
+            [-28.0, 154.5],
+            [-38.0, 152.0],
+            [-46.0, 165.0],  // South Pacific Current (Eastward via ACC)
+            [-50.0, -170.0],
+            [-52.0, -135.0],
+            [-50.0, -95.0],
+            [-44.0, -76.0],  // Humboldt / Peru Current (Northward upwelling)
+            [-30.0, -72.0],
+            [-16.0, -75.0],
+            [-5.0, -84.0],   // South Equatorial Current (Westward)
+            [-4.5, -120.0],
+            [-5.0, -160.0],
+            [-8.0, 175.0],
+            [-14.0, 160.0],
+            [-18.0, 152.0]   // Seamless closure back to start!
         ],
-        color: '#fb923c',
-        stroke: 1.9,
+        color: '#0284c7',
+        stroke: 2.0,
         alt: 0.006,
-        dashLength: 0.15,
-        dashGap: 0.04,
-        animateTime: 4200
-    },
-    {
-        name: 'East Australian Current (EAC)',
-        type: 'warm',
-        coords: [
-            [-15.5, 148.0], [-19.5, 151.0], [-24.5, 154.5], [-29.5, 154.0],
-            [-34.0, 152.5], [-38.5, 151.0], [-42.5, 149.0]
-        ],
-        color: '#fb923c',
-        stroke: 1.8,
-        alt: 0.006,
-        dashLength: 0.15,
-        dashGap: 0.04,
-        animateTime: 4600
-    },
-    {
-        name: 'North Equatorial Current (Atlantic)',
-        type: 'warm',
-        coords: [
-            [13.5, -20.0], [14.5, -32.0], [15.2, -45.0], [15.8, -58.0], [16.5, -68.0]
-        ],
-        color: '#fbbf24',
-        stroke: 1.6,
-        alt: 0.006,
-        dashLength: 0.16,
-        dashGap: 0.04,
+        dashLength: 0.18,
+        dashGap: 0.03,
         animateTime: 5000
     },
-    {
-        name: 'North Equatorial Current (Pacific)',
-        type: 'warm',
-        coords: [
-            [12.0, -110.0], [12.5, -130.0], [13.0, -155.0], [13.5, 175.0],
-            [14.0, 155.0], [14.5, 135.0]
-        ],
-        color: '#fbbf24',
-        stroke: 1.6,
-        alt: 0.006,
-        dashLength: 0.18,
-        dashGap: 0.04,
-        animateTime: 5200
-    },
-    {
-        name: 'South Equatorial Current (Pacific)',
-        type: 'warm',
-        coords: [
-            [-4.5, -85.0], [-4.0, -110.0], [-3.5, -140.0], [-3.0, -170.0],
-            [-2.8, 160.0], [-2.5, 140.0]
-        ],
-        color: '#fbbf24',
-        stroke: 1.6,
-        alt: 0.006,
-        dashLength: 0.18,
-        dashGap: 0.04,
-        animateTime: 5200
-    },
 
-    // COLD CURRENTS (Eastern Boundary Upwelling & Subpolar Drift)
+    // 6. INDIAN OCEAN SUBTROPICAL GYRE (Closed Continuous Circuit)
     {
-        name: 'California Current',
-        type: 'cold',
+        name: 'Indian Ocean Subtropical Gyre',
+        type: 'gyre',
         coords: [
-            [50.0, -128.5], [46.0, -126.5], [41.0, -125.8], [36.0, -123.5],
-            [32.0, -120.0], [27.0, -116.0], [22.5, -111.0]
+            [-10.0, 95.0],   // South Equatorial Current start
+            [-12.0, 75.0],
+            [-14.0, 55.0],
+            [-18.0, 42.0],   // Agulhas Current (Southward)
+            [-28.0, 33.0],
+            [-36.0, 24.0],
+            [-40.0, 20.0],   // West Wind Drift (Eastward)
+            [-43.0, 48.0],
+            [-44.0, 78.0],
+            [-40.0, 105.0],
+            [-33.0, 114.0],  // West Australian Current (Northward)
+            [-22.0, 110.0],
+            [-14.0, 104.0],
+            [-10.0, 95.0]    // Seamless closure back to start!
         ],
-        color: '#06b6d4',
-        stroke: 1.9,
-        alt: 0.006,
-        dashLength: 0.15,
-        dashGap: 0.03,
-        animateTime: 4600
-    },
-    {
-        name: 'Humboldt (Peru) Current',
-        type: 'cold',
-        coords: [
-            [-48.0, -76.0], [-42.0, -75.0], [-36.0, -73.5], [-30.0, -72.0],
-            [-23.5, -71.0], [-17.5, -73.0], [-12.0, -78.0], [-6.5, -82.0], [-2.0, -86.5]
-        ],
-        color: '#0284c7',
+        color: '#fb923c',
         stroke: 2.0,
         alt: 0.006,
-        dashLength: 0.15,
-        dashGap: 0.03,
-        animateTime: 4400
-    },
-    {
-        name: 'Benguela Current (South Atlantic Upwelling)',
-        type: 'cold',
-        coords: [
-            [-35.5, 18.5], [-31.5, 16.8], [-27.0, 14.2], [-22.0, 12.5],
-            [-17.0, 10.5], [-11.5, 9.0]
-        ],
-        color: '#0284c7',
-        stroke: 1.9,
-        alt: 0.006,
-        dashLength: 0.15,
+        dashLength: 0.18,
         dashGap: 0.03,
         animateTime: 4600
     },
+
+    // 7. ANTARCTIC CIRCUMPOLAR CURRENT (ACC - Continuous 360° Ring Around Antarctica)
     {
-        name: 'Canary Current',
-        type: 'cold',
-        coords: [
-            [42.0, -10.0], [37.0, -10.5], [32.0, -12.5], [26.5, -16.2],
-            [21.0, -19.5], [15.0, -22.5]
-        ],
-        color: '#06b6d4',
-        stroke: 1.8,
-        alt: 0.006,
-        dashLength: 0.15,
-        dashGap: 0.03,
-        animateTime: 4800
-    },
-    {
-        name: 'Labrador Current',
-        type: 'cold',
-        coords: [
-            [66.0, -60.0], [60.5, -61.2], [55.0, -57.5], [50.0, -53.8],
-            [45.0, -50.2], [41.5, -49.0]
-        ],
+        name: 'Antarctic Circumpolar Current (ACC)',
+        type: 'acc',
+        coords: generateLatitudeLine(-54, 2), // Seamless 360° continuous closed circle
         color: '#38bdf8',
-        stroke: 1.9,
-        alt: 0.006,
-        dashLength: 0.14,
-        dashGap: 0.03,
-        animateTime: 4200
-    },
-    {
-        name: 'Oyashio (Kamchatka) Current',
-        type: 'cold',
-        coords: [
-            [58.0, 164.0], [52.5, 158.5], [47.5, 152.5], [43.0, 147.2], [39.5, 143.0]
-        ],
-        color: '#38bdf8',
-        stroke: 1.8,
-        alt: 0.006,
-        dashLength: 0.14,
-        dashGap: 0.03,
-        animateTime: 4200
-    },
-    {
-        name: 'West Australian Current',
-        type: 'cold',
-        coords: [
-            [-37.5, 114.5], [-32.5, 113.0], [-27.0, 111.5], [-21.0, 109.0], [-15.0, 106.0]
-        ],
-        color: '#06b6d4',
-        stroke: 1.8,
-        alt: 0.006,
-        dashLength: 0.15,
-        dashGap: 0.03,
-        animateTime: 4800
-    },
-    {
-        name: 'Antarctic Circumpolar Current (ACC - West Wind Drift)',
-        type: 'cold',
-        coords: generateLatitudeLine(-54, 2),
-        color: '#38bdf8',
-        stroke: 2.2,
+        stroke: 2.4,
         alt: 0.007,
-        dashLength: 0.18,
-        dashGap: 0.04,
-        animateTime: 5400
+        dashLength: 0.20,
+        dashGap: 0.03,
+        animateTime: 5200
     }
 ];
 
-// Helper to generate meridian longitude paths
-function generateLongitudeLine(lng, minLat = -85, maxLat = 85, step = 3) {
-    const pts = [];
-    for (let lat = minLat; lat <= maxLat; lat += step) {
-        pts.push([lat, lng]);
-    }
-    return pts;
-}
-
-// 1. GEOGRAPHIC GRID (Parallels, Equator, Tropics, Prime Meridian)
+// 1. GEOGRAPHIC GRID (Parallels, Equator, Tropics, Polar Circles, Meridians)
 const GEOGRAPHIC_GRID_PATHS = [
-    // The Equator (0° Latitude)
+    // The Equator (0° Latitude) - Continuous 360° Closed Circle
     { name: 'Equator (0°)', coords: generateLatitudeLine(0), color: '#fbbf24', stroke: 2.2 },
-    // Tropic of Cancer (23.44° N)
-    { name: 'Tropic of Cancer (23.5° N)', coords: generateLatitudeLine(23.44), color: '#f97316', stroke: 1.5, dashLength: 0.6, dashGap: 0.3 },
-    // Tropic of Capricorn (23.44° S)
-    { name: 'Tropic of Capricorn (23.5° S)', coords: generateLatitudeLine(-23.44), color: '#f97316', stroke: 1.5, dashLength: 0.6, dashGap: 0.3 },
-    // Arctic Circle (66.56° N)
-    { name: 'Arctic Circle (66.5° N)', coords: generateLatitudeLine(66.56), color: '#38bdf8', stroke: 1.5, dashLength: 0.4, dashGap: 0.4 },
-    // Antarctic Circle (66.56° S)
-    { name: 'Antarctic Circle (66.5° S)', coords: generateLatitudeLine(-66.56), color: '#38bdf8', stroke: 1.5, dashLength: 0.4, dashGap: 0.4 },
-    // Prime Meridian (0° Longitude)
-    { name: 'Prime Meridian (0°)', coords: generateLongitudeLine(0), color: '#34d399', stroke: 2.0 },
-    // International Date Line (180° Longitude)
-    { name: 'International Date Line (180°)', coords: generateLongitudeLine(180), color: '#a78bfa', stroke: 1.6, dashLength: 0.5, dashGap: 0.5 }
+    // Tropic of Cancer (23.44° N) - Closed Circle
+    { name: 'Tropic of Cancer (23.5° N)', coords: generateLatitudeLine(23.44), color: '#f97316', stroke: 1.6, dashLength: 0.6, dashGap: 0.3 },
+    // Tropic of Capricorn (23.44° S) - Closed Circle
+    { name: 'Tropic of Capricorn (23.5° S)', coords: generateLatitudeLine(-23.44), color: '#f97316', stroke: 1.6, dashLength: 0.6, dashGap: 0.3 },
+    // Arctic Circle (66.56° N) - Closed Circle
+    { name: 'Arctic Circle (66.5° N)', coords: generateLatitudeLine(66.56), color: '#38bdf8', stroke: 1.6, dashLength: 0.5, dashGap: 0.4 },
+    // Antarctic Circle (66.56° S) - Closed Circle
+    { name: 'Antarctic Circle (66.5° S)', coords: generateLatitudeLine(-66.56), color: '#38bdf8', stroke: 1.6, dashLength: 0.5, dashGap: 0.4 },
+    // Prime Meridian (0° Longitude) - Connected Pole-to-Pole (-90° to +90°)
+    { name: 'Prime Meridian (0°)', coords: generateLongitudeLine(0), color: '#10b981', stroke: 2.0 },
+    // International Date Line (180° Longitude) - Connected Pole-to-Pole (-90° to +90°)
+    { name: 'International Date Line (180°)', coords: generateLongitudeLine(180), color: '#a855f7', stroke: 1.8, dashLength: 0.6, dashGap: 0.4 }
 ];
 
-// Add subtle 30° grid parallels and meridians
-[-60, -30, 30, 60].forEach(lat => {
+// Connected Graticule Lattice (Parallels every 15° & Meridians every 30° converging at both Poles)
+[-75, -60, -45, -30, -15, 15, 30, 45, 60, 75].forEach(lat => {
     GEOGRAPHIC_GRID_PATHS.push({
         name: `Parallel ${lat}°`,
-        coords: generateLatitudeLine(lat, 5),
-        color: 'rgba(255, 255, 255, 0.16)',
-        stroke: 0.7,
-        dashLength: 0.3,
-        dashGap: 0.4
+        coords: generateLatitudeLine(lat, 3), // Seamless closed 360° ring
+        color: 'rgba(255, 255, 255, 0.18)',
+        stroke: 0.8,
+        dashLength: 0.4,
+        dashGap: 0.3
     });
 });
 
 [-150, -120, -90, -60, -30, 30, 60, 90, 120, 150].forEach(lng => {
     GEOGRAPHIC_GRID_PATHS.push({
         name: `Meridian ${lng}°`,
-        coords: generateLongitudeLine(lng, -80, 80, 5),
-        color: 'rgba(255, 255, 255, 0.14)',
-        stroke: 0.6,
-        dashLength: 0.25,
-        dashGap: 0.45
+        coords: generateLongitudeLine(lng, 2), // Runs continuously from South Pole (-90°) to North Pole (+90°)
+        color: 'rgba(255, 255, 255, 0.16)',
+        stroke: 0.7,
+        dashLength: 0.4,
+        dashGap: 0.3
     });
 });
 
